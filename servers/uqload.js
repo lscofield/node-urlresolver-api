@@ -19,7 +19,7 @@ exports.index = function (req, res) {
                 const s = text.children[0].data;
                 if (s.includes("sources:")) {
                     var json = s.split("[")[1].split("]")[0];
-                    json = JSON.parse("[" + json.split('\\').join('') + "]");
+                    json = JSON.parse("[" + json + "]");
                     mp4 = json[0];
                     break;
                 }
