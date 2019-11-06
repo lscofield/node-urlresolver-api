@@ -25,7 +25,6 @@ exports.index = function (req, res) {
                 }
             } catch (rt) { }
         }
-
         if (found != '') {
             execPhp('../lib/unpacker.php', '/usr/bin/php', function (error, php, output) {
                 php.nodeunpack(found, function (error, result, output, printed) {
@@ -34,7 +33,7 @@ exports.index = function (req, res) {
                     } else {
                         var mp4Regex = /vsrc=\s*"(([*])*.*?)"/g;
                         var match = mp4Regex.exec(result);
-                        mp4 = match[1] != '' ? match[1] : null;
+                        mp4 = match[1] != '' ? 'https:' + match[1] : null;
                     }
 
                     mp4 = mp4 == null ? '' : mp4;
