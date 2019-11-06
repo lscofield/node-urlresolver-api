@@ -21,6 +21,7 @@ var vidia = require('./servers/vidia');
 var jetload = require('./servers/jetload');
 var vidcloud = require('./servers/vidcloud');
 var videomega = require('./servers/videomega');
+var mixdrop = require('./servers/mixdrop');
 
 //  routes
 router.route('/cloudvideo').post(cloudvideo.index);
@@ -33,5 +34,6 @@ router.route('/vidia').post(vidia.index);
 router.route('/jetload').post(jetload.index);
 router.route('/vidcloud').post(vidcloud.index);
 router.route('/videomega').post(videomega.index);
+router.route('/mixdrop').post(mixdrop.index);
 // Export API routes
 module.exports = router;
