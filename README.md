@@ -7,6 +7,9 @@
     - cheerio   
     - express  
     - youtube-dl   
+    - got  
+    - exec-php (optional)  
+    - json5  
   
 
 ### Installation  

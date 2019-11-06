@@ -6,13 +6,22 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["nodejs", "urlresolver", "scraper", "resolverurl", "kodi"],
+  "keywords": [
+    "nodejs",
+    "urlresolver",
+    "scraper",
+    "resolverurl",
+    "kodi"
+  ],
   "author": "lscofield",
   "license": "GNU",
   "dependencies": {
     "body-parser": "^1.19.0",
     "cheerio": "^1.0.0-rc.3",
+    "exec-php": "0.0.5",
     "express": "^4.17.1",
+    "got": "^9.6.0",
+    "json5": "^2.1.1",
     "youtube-dl": "^2.1.0"
   }
 }
