@@ -25,6 +25,7 @@ var videomega = require(`${_servers_}videomega`);
 var mixdrop = require(`${_servers_}mixdrop`);
 var uqload = require(`${_servers_}uqload`);
 var jawcloud = require(`${_servers_}jawcloud`);
+var mp4upload = require(`${_servers_}mp4upload`);
 
 //  routes
 router.route('/cloudvideo').post(cloudvideo.index);
@@ -40,5 +41,6 @@ router.route('/videomega').post(videomega.index);
 router.route('/mixdrop').post(mixdrop.index);
 router.route('/uqload').post(uqload.index);
 router.route('/jawcloud').post(jawcloud.index);
+router.route('/mp4upload').post(mp4upload.index);
 // Export API routes
 module.exports = router;
