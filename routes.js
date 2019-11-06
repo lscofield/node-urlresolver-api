@@ -1,6 +1,7 @@
 // routes.js
 // Initialize express router
 let router = require('express').Router();
+const _servers_ = './servers/';
 // Set default API response
 router.get('/', function (req, res) {
     res.set({ 'content-type': 'application/json; charset=utf-8' });
@@ -11,18 +12,18 @@ router.get('/', function (req, res) {
 });
 
 // paths
-var cloudvideo = require('./servers/cloudvideo');
-var clipwatching = require('./servers/clipwatching');
-var onlystream = require('./servers/onlystream');
-var vidoza = require('./servers/vidoza');
-var vidlox = require('./servers/vidlox');
-var gounlimited = require('./servers/gounlimited');
-var vidia = require('./servers/vidia');
-var jetload = require('./servers/jetload');
-var vidcloud = require('./servers/vidcloud');
-var videomega = require('./servers/videomega');
-var mixdrop = require('./servers/mixdrop');
-var uqload = require('./servers/uqload');
+var cloudvideo = require(`${_servers_}cloudvideo`);
+var clipwatching = require(`${_servers_}clipwatching`);
+var onlystream = require(`${_servers_}onlystream`);
+var vidoza = require(`${_servers_}vidoza`);
+var vidlox = require(`${_servers_}vidlox`);
+var gounlimited = require(`${_servers_}gounlimited`);
+var vidia = require(`${_servers_}vidia`);
+var jetload = require(`${_servers_}jetload`);
+var vidcloud = require(`${_servers_}vidcloud`);
+var videomega = require(`${_servers_}videomega`);
+var mixdrop = require(`${_servers_}mixdrop`);
+var uqload = require(`${_servers_}uqload`);
 
 //  routes
 router.route('/cloudvideo').post(cloudvideo.index);
