@@ -34,9 +34,14 @@ exports.index = function (req, res) {
                 const text = $('script[type="text/javascript"]').get(i);
                 try {
                     var jwplayer = text.children[0].data;
-                    if (jwplayer.includes('sources:')) {
+                    if (jwplayer.includes('sources:') && (jwplayer.includes('.m3u8') || jwplayer.includes('.mp4'))) {
+                       
                         var json = jwplayer.split("[{")[1].split("}]")[0];
-                        json = JSON.parse("[{" + json + "}]");
+                        json = "[{" + json + "}]";
+                        json = json.split('src:').join('"src":');
+                        json = json.split('type:').join('"type":');
+                        json = JSON.parse(json);
+                        
                         mp4 = json[0].src;
 
                         break;
