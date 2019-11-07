@@ -30,7 +30,7 @@ exports.index = function (req, res) {
 
         try {
             var found = '';
-           /* for (var i = 0; i < $('script').get().length; i++) {
+            for (var i = 0; i < $('script').get().length; i++) {
                 const text = $('script').get(i);
                 try {
                     const s = text.children[0].data;
@@ -39,7 +39,7 @@ exports.index = function (req, res) {
                         break;
                     }
                 } catch (rt) { }
-            }*/
+            }
             if (found != '') {
                 execPhp('../lib/unpacker.php', '/usr/bin/php', function (error, php, output) {
                     php.nodeunpack(found, function (error, result, output, printed) {
@@ -50,7 +50,8 @@ exports.index = function (req, res) {
                                 var mp4Regex = /vsrc=\s*"(([*])*.*?)"/g;
                                 var match = mp4Regex.exec(result);
                                 mp4 = match && match[1] != '' ? 'https:' + match[1] : null;
-                            } catch (errr) { }
+                            } catch (errr) {
+                            }
                         }
 
                         mp4 = mp4 == null ? '' : mp4;
