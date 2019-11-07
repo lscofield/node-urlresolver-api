@@ -5,8 +5,7 @@
 ### Required dependencies:  
     - body-parser  
     - cheerio   
-    - express  
-    - youtube-dl   
+    - express   
     - got  
     - exec-php (optional)  
     - json5  
