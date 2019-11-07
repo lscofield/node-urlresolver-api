@@ -29,6 +29,7 @@ var mp4upload = require(`${_servers_}mp4upload`);
 var ok = require(`${_servers_}ok`);
 var vup = require(`${_servers_}vup`);
 var videobin = require(`${_servers_}videobin`);
+var openplay = require(`${_servers_}openplay`);
 
 //  routes
 router.route('/cloudvideo').post(cloudvideo.index);
@@ -48,5 +49,6 @@ router.route('/mp4upload').post(mp4upload.index);
 router.route('/ok').post(ok.index);
 router.route('/vup').post(vup.index);
 router.route('/videobin').post(videobin.index);
+router.route('/openplay').post(openplay.index);
 // Export API routes
 module.exports = router;
