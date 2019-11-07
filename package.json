@@ -13,6 +13,7 @@
     "resolverurl",
     "kodi"
   ],
+  "homepage": "https://github.com/lscofield/node-urlresolver-api",
   "author": "lscofield",
   "license": "GNU",
   "dependencies": {
