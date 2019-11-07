@@ -4,7 +4,6 @@
  */
 
 const cheerio = require('cheerio');
-const youtubedl = require('youtube-dl');
 const json5 = require('json5');
 const skkchecker = require('../lib/skkchecker');
 
@@ -29,20 +28,7 @@ exports.index = function (req, res) {
         var mp4 = null;
 
         if (mode == 'remote') {
-            const options = [];
-            mp4 = '';
-            youtubedl.getInfo(html, options, function (err, info) {
-                if (err) {
-                    res.json({ status: 'error', url: '' });
-                } else {
-                    if ('entries' in info)
-                        info = info.entries[0];
-                    else info = info;
-
-                    mp4 = 'url' in info ? info.url : '';
-                    res.json({ status: mp4 == '' ? 'error' : 'ok', url: mp4 });
-                }
-            });
+            res.json({ status: 'error', url: '' });
         } else {
             const $ = cheerio.load(html);
             try {
