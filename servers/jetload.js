@@ -32,9 +32,6 @@ exports.index = function (req, res) {
 
         try {
             mp4 = $('video').first().attr('src');
-
-            if (mp4 == null || mp4 == '')
-                mp4 = null;
         } catch (e) {
             mp4 = null;
         }

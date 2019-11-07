@@ -3,7 +3,6 @@
  * GNU
  */
 
-const cheerio = require('cheerio');
 const youtubedl = require('youtube-dl');
 
 exports.index = function (req, res) {
@@ -28,17 +27,14 @@ exports.index = function (req, res) {
             }
         });
     } else {
-        const $ = cheerio.load(html);
-
         try {
-            mp4 = $('video').first().attr('src');
-
-            if (mp4 == null || mp4 == '')
-                mp4 = null;
+            const json = JSON.parse(html);
+            if(json)
+                mp4 = 'HQ' in json.video.src ? json.video.src.HQ : json.video.src.Regular;
+            
         } catch (e) {
             mp4 = null;
         }
-
 
         mp4 = mp4 == null ? '' : mp4;
 
