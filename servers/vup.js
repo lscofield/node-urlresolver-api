@@ -5,6 +5,7 @@
 
 const cheerio = require('cheerio');
 const youtubedl = require('youtube-dl');
+const json5 = require('json5');
 
 exports.index = function (req, res) {
     const source = 'source' in req.body ? req.body.source : req.query.source;
@@ -38,9 +39,7 @@ exports.index = function (req, res) {
                        
                         var json = jwplayer.split("[{")[1].split("}]")[0];
                         json = "[{" + json + "}]";
-                        json = json.split('src:').join('"src":');
-                        json = json.split('type:').join('"type":');
-                        json = JSON.parse(json);
+                        json = json5.parse(json);
                         
                         mp4 = json[0].src;
 
