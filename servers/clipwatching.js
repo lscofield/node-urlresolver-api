@@ -51,7 +51,7 @@ exports.index = function (req, res) {
                             mp4 = '';
                         } else {
 
-                            const jsonRegex = /sources:(\[.*?\])/;
+                            const jsonRegex = /sources:\s*(\[.*?\])/;
                             var json = jsonRegex.exec(result);
                             json = json5.parse(json[1]);
 

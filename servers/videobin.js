@@ -18,7 +18,7 @@ exports.index = function (req, res) {
                 var jwplayer = text.children[0].data;
                 if (jwplayer.includes('sources:')) {
 
-                    const jsonRegex = /sources:(\[.*?\])/;
+                    const jsonRegex = /sources:\s*(\[.*?\])/;
                     var json = jsonRegex.exec(jwplayer);
                     json = json5.parse(json[1]);
 
