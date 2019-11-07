@@ -29,7 +29,7 @@ exports.index = function (req, res) {
         mp4 = null;
     }
 
-    mp4 = mp4 == null ? '' : mp4;
+    mp4 = mp4 == null ? '' : mp4 + '/video/';
 
     res.json({ status: mp4 == '' ? 'error' : 'ok', url: mp4 });
 };
