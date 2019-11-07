@@ -121,7 +121,7 @@ $unpacked = $unpacker->Unpack($packedJs);
 echo $unpacked;*/
 
 // nodejs call this function 
-// to unpack videomega and mixdrop source
+// to unpack videomega, mixdrop and mp4upload source
 // you can make your own js unpacker
 // if you don't need use PHP
 function nodeunpack($str){
