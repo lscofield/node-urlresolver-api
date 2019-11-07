@@ -31,6 +31,7 @@ var vup = require(`${_servers_}vup`);
 var videobin = require(`${_servers_}videobin`);
 var openplay = require(`${_servers_}openplay`);
 var archive = require(`${_servers_}archive`);
+var veoh = require(`${_servers_}veoh`);
 
 //  routes
 router.route('/cloudvideo').post(cloudvideo.index);
@@ -52,5 +53,6 @@ router.route('/vup').post(vup.index);
 router.route('/videobin').post(videobin.index);
 router.route('/openplay').post(openplay.index);
 router.route('/archive').post(archive.index);
+router.route('/veoh').post(veoh.index);
 // Export API routes
 module.exports = router;
