@@ -1,6 +1,11 @@
 // routes.js
 // Initialize express router
+
 let router = require('express').Router();
+// require config file
+const config = require('./config/conf');
+// config file
+global.config = config;
 const _servers_ = './servers/';
 // Set default API response
 router.get('/', function (req, res) {
