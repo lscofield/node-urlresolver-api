@@ -18,7 +18,7 @@ exports.index = function (req, res) {
         json = JSON.parse(json).videos;
     
         for(var i = 0; i < json.length; i++){
-            if(json[i].name == 'sd'){
+            if(json[i].name == 'hd'){
                 mp4 = json[i].url;
                 break;
             }
