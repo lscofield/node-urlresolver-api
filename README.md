@@ -18,7 +18,7 @@ Next, install all dependencies with npm command
 
 
 ### Installing nodejs 
-    - To install nodejs (and npm) check [this simple tutorial](https://deepmerse.es/post/how-to-install-nodejs-10-11-or-12-on-ubuntu-16-04-18-04-and-19-04-31) 
+- To install nodejs (and npm) check [this simple tutorial](https://deepmerse.es/post/how-to-install-nodejs-10-11-or-12-on-ubuntu-16-04-18-04-and-19-04-31) 
 
 
 ### Install dependencies
