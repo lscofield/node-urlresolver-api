@@ -35,9 +35,9 @@ exports.index = function (req, res) {
                 const text = $('script').get(i);
                 try {
                     var jwplayer = text.children[0].data;
-                    if (jwplayer.includes('sources:')) {
+                    if (jwplayer.includes('"sources":')) {
 
-                        const jsonRegex = /sources:\s*(\[.*?\])/;
+                        const jsonRegex = /"sources":\s*(\[.*?\])/s;
                         var json = jsonRegex.exec(jwplayer);
                         json = json5.parse(json[1]);
 
