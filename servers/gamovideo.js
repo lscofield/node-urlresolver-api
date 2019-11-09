@@ -5,6 +5,7 @@
 
 const cheerio = require('cheerio');
 const execPhp = require('exec-php');
+const json5 = require('json5');
 const skkchecker = require('../lib/skkchecker');
 
 exports.index = function (req, res) {
@@ -32,15 +33,17 @@ exports.index = function (req, res) {
             var found = '';
             for (var i = 0; i < $('script[type="text/javascript"]').get().length; i++) {
                 const text = $('script[type="text/javascript"]').get(i);
+               
                 try {
                     const s = text.children[0].data;
+                
                     if (s.includes("eval(function") && s.includes("gamovideo")) {
                         found = s;
                         break;
                     }
                 } catch (rt) { }
             }
-
+           
             if (found != '') {
                 execPhp('../lib/unpacker.php', '/usr/bin/php', function (error, php, output) {
                     php.nodeunpack(found, function (error, result, output, printed) {
@@ -48,13 +51,15 @@ exports.index = function (req, res) {
                             mp4 = '';
                         } else {
                             try {
-                                var mp4Regex = /sources:\s*(\[.*?\])"/s;
+                                
+                                var mp4Regex = /sources:\s*(\[.*?\])/s;
                                 var json = mp4Regex.exec(result);
+                            
                                 json = json5.parse(json[1]);
 
-                                if (json && json.length > 0)
+                                if (json && json.length == 1)
                                     mp4 = json[0].file;
-                                else {
+                                else if(json && json.length > 1){
                                     for (var h = 0; h < json.length; h++)
                                         if (json[h].file.includes('v.mp4'))
                                             mp4 = json[h].file;
