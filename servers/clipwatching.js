@@ -4,7 +4,6 @@
  */
 
 const cheerio = require('cheerio');
-const execPhp = require('exec-php');
 const json5 = require('json5');
 const skkchecker = require('../lib/skkchecker');
 
@@ -32,49 +31,27 @@ exports.index = function (req, res) {
             res.json({ status: 'error', url: '' });
         } else {
             const $ = cheerio.load(html);
-
             try {
-                var found = '';
-                for (var i = 0; i < $('script').get().length; i++) {
-                    const text = $('script').get(i);
+                for (var i = 0; i < $('script[type="text/javascript"]').get().length; i++) {
+                    const text = $('script[type="text/javascript"]').get(i);
                     try {
-                        const s = text.children[0].data;
-                        if (s.includes("eval(function")) {
-                            found = s;
+                        var jwplayer = text.children[0].data;
+                        if (jwplayer.includes('sources:')) {
+                            const jsonRegex = /sources:\s*(\[.*?\])/s;
+                            var json = jsonRegex.exec(jwplayer);
+                            json = json5.parse(json[1]);
+
+                            mp4 = 'file' in json[0] ? json[0].file : json[0].src;
+
                             break;
                         }
                     } catch (rt) { }
                 }
+            } catch (e) { }
 
-                if (found != '') {
-                    execPhp('../lib/unpacker.php', '/usr/bin/php', function (error, php, output) {
-                        php.nodeunpack(found, function (error, result, output, printed) {
-                            if (error) {
-                                mp4 = '';
-                            } else {
+            mp4 = mp4 == null ? '' : mp4;
 
-                                try {
-                                    const jsonRegex = /sources:\s*(\[.*?\])/;
-                                    var json = jsonRegex.exec(result);
-                                    json = json5.parse(json[1]);
-
-                                    mp4 = json[0].file;
-                                } catch (err) {
-                                    mp4 = null;
-                                }
-                            }
-
-                            mp4 = mp4 == null ? '' : mp4;
-
-                            res.json({ status: mp4 == '' ? 'error' : 'ok', url: mp4 });
-                        });
-                    });
-                } else {
-                    res.json({ status: 'error', url: '' });
-                }
-            } catch (e) {
-                res.json({ status: 'error', url: '' });
-            }
+            res.json({ status: mp4 == '' ? 'error' : 'ok', url: mp4 });
         }
     }
 };
