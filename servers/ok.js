@@ -28,7 +28,7 @@ exports.index = function (req, res) {
         const $ = cheerio.load(html);
 
         try {
-            var json = $('#VideoAutoplayPlayerC').parent().attr('data-options');
+            var json = html && html.includes('VideoAutoplayPlayerC') ? $('#VideoAutoplayPlayerC').parent().attr('data-options') : $('#embedVideoC').parent().attr('data-options');
             json = JSON.parse(json).flashvars.metadata;
             json = JSON.parse(json).videos;
 
