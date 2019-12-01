@@ -32,50 +32,23 @@ exports.index = function (req, res) {
             const $ = cheerio.load(html);
 
             try {
-                for (var i = 0; i < $('script[type="text/javascript"]').get().length; i++) {
-                    const text = $('script[type="text/javascript"]').get(i);
+                for (var i = 0; i < $('script').get().length; i++) {
+                    const text = $('script').get(i);
                     try {
                         var jwplayer = text.children[0].data;
-                        if (jwplayer.includes('sources:')) {
+                        if (jwplayer.includes('player.updateSrc')) {
                             if (jwplayer.includes('v.mp4')) {
-                                var mp4Regex = /file:\s*"((?:\\.|[^"\\])*v.mp4)"/g;
+                                var mp4Regex = /src:\s*"((?:\\.|[^"\\])*v.mp4)"/s;
                                 var match = mp4Regex.exec(jwplayer);
                                 mp4 = match[1].includes('v.mp4') ? match[1] : null;
                             } else if (jwplayer.includes('master.m3u8')) {
-                                var mp4Regex = /file:\s*"((?:\\.|[^"\\])*master.m3u8)"/g;
+                                var mp4Regex = /src:\s*"((?:\\.|[^"\\])*master.m3u8)"/s;
                                 var match = mp4Regex.exec(jwplayer);
                                 mp4 = match[1].includes('master.m3u8') ? match[1] : null;
                             }
                             break;
                         }
                     } catch (rt) { }
-                }
-
-                if (mp4 == null || (!mp4.includes(".mp4") && !mp4.includes(".m3u8"))) {
-                    var server = $("#vplayer").children('img').attr("src");
-                    server = server.split("/")[2];
-                    for (var i = 0; i < $('script[type="text/javascript"]').get().length; i++) {
-                        const text = $('script[type="text/javascript"]').get(i);
-                        try {
-                            var jwplayer = text.children[0].data;
-                            if (jwplayer.includes('eval(function(')) {
-                                var hash = jwplayer.split("|");
-
-                                for (var c = 1; c < hash.length; c++) {
-                                    if (hash[c] != null && hash[c] !== '' && !hash[c].includes("script")) {
-                                        if (hash[c].length > 35) {
-                                            mp4 = "https://" + server + "/" + hash[c] + "/v.mp4";
-                                            if (mp4.length > 40) {
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-
-                                break;
-                            }
-                        } catch (rt) { }
-                    }
                 }
 
                 if (mp4 == null || (!mp4.includes(".mp4") && !mp4.includes(".m3u8"))) {
