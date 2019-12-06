@@ -48,6 +48,8 @@ exports.index = function (req, res) {
                         } else {
                             try {
                                 var mp4Regex = /vsrc=\s*"(([*])*.*?)"/g;
+                                if (result.includes('vsrc2'))
+                                    mp4Regex = /vsrc2=\s*"(([*])*.*?)"/g;
                                 var match = mp4Regex.exec(result);
                                 mp4 = match && match[1] != '' ? 'https:' + match[1] : null;
                             } catch (errr) {
