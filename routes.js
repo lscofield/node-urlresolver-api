@@ -38,5 +38,6 @@ router.route('/openplay').post(require(`${_servers_}openplay`).index);
 router.route('/archive').post(require(`${_servers_}archive`).index);
 router.route('/veoh').post(require(`${_servers_}veoh`).index);
 router.route('/gamovideo').post(require(`${_servers_}gamovideo`).index);
+router.route('/streamplay').post(require(`${_servers_}streamplay`).index);
 // Export API routes
 module.exports = router;
