@@ -129,5 +129,3 @@ function nodeunpack($str){
 	$unpacked = $unpacker->Unpack($str);
 	return $unpacked;
 }
-
-?>
