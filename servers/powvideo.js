@@ -29,9 +29,6 @@ exports.index = function (req, res) {
         try {
             execPhp('../lib/powvideo.php', '/usr/bin/php', function (error, php, output) {
                 php.powvideo(source, ip, function (error, result, output, printed) {
-                    console.log(error)
-                    console.log(result)
-                    console.log(ip)
                     if (error) {
                         mp4 = '';
                     } else {
