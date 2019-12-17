@@ -25,3 +25,6 @@ Next, install all dependencies with npm command
     - All you need to do is clone the project with git clone <repo>  
     - navigate to de project folder and run this command: npm install  
     - Now you can start the app running the command: node app.js or pm2 
+
+
+### Usage (Pending)
