@@ -40,5 +40,6 @@ router.route('/veoh').post(require(`${_servers_}veoh`).index);
 router.route('/gamovideo').post(require(`${_servers_}gamovideo`).index);
 router.route('/streamplay').post(require(`${_servers_}streamplay`).index);
 router.route('/powvideo').post(require(`${_servers_}powvideo`).index);
+router.route('/prostream').post(require(`${_servers_}prostream`).index);
 // Export API routes
 module.exports = router;
