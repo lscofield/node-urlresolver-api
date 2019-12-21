@@ -396,10 +396,10 @@ $c1 second array (if exist) but only after replace with function abc
         $out = str_replace("(Math.round(", "", $out);
         $out = str_replace("Math.sqrt", "sqrt", $out);
         $out = str_replace("))", "", $out);
-        if (preg_match_all("/\(\"body\"\)\.data\(\"(\w\s*\d)\"\,(\d+)\)/", $out, $u)) {
+        if (preg_match_all("/\(\"div:first\"\)\.data\(\"(\w\s*\d)\"\,(\d+)\)/", $out, $u)) {
             for ($k = 0; $k < count($u[0]); $k++) {
                 $out = str_replace("$" . $u[0][$k] . ";", "", $out);
-                $out = str_replace('$("body").data("' . $u[1][$k] . '")', $u[2][$k], $out);
+                $out = str_replace('$("div:first").data("' . $u[1][$k] . '")', $u[2][$k], $out);
             }
         }
         $out = str_replace('"', "", $out);
