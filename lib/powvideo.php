@@ -6,115 +6,109 @@
 
 class JavaScriptUnpacker
 {
-	private $unbaser;
-	private $payload;
-	private $symtab;
-	private $radix;
-	private $count;
-	
-	function Detect($source)
-	{
-		$source = preg_replace("/ /","",$source);
-		preg_match("/eval\(function\(p,a,c,k,e,[r|d]?/", $source, $res);
-		
-		return (count($res) > 0);
-	}
-	
-	function Unpack($source)
-	{
-		preg_match_all("/}\('(.*)', *(\d+), *(\d+), *'(.*?)'\.split\('\|'\)/",$source,$out);
-		
-		
-		// Payload
-		$this->payload = $out[1][0];
-		// Words
-		$this->symtab = preg_split("/\|/",$out[4][0]); 
-	
-		// Radix
-		$this->radix = (int)$out[2][0];
-	
-		// Words Count
-		$this->count = (int)$out[3][0];
+    private $unbaser;
+    private $payload;
+    private $symtab;
+    private $radix;
+    private $count;
 
-		
-		if( $this->count != count($this->symtab)) return; // Malformed p.a.c.k.e.r symtab !
-		
-		//ToDo: Try catch
-		$this->unbaser = new Unbaser($this->radix);
-		
-		$result = preg_replace_callback(
-					'/\b\w+\b/',
-						array($this, 'Lookup')
-					,
-					$this->payload
-				);
-		$result = str_replace('\\', '', $result);
-	
-		$this->ReplaceStrings($result);
-		return $result;
-	}
-	
-	function Lookup($matches)
-	{
-		$word = $matches[0];
-		$ub = $this->symtab[$this->unbaser->Unbase($word)];
-		$ret = !empty($ub) ? $ub : $word;
-		return $ret;
-	}
+    function Detect($source)
+    {
+        $source = preg_replace("/ /", "", $source);
+        preg_match("/eval\(function\(p,a,c,k,e,[r|d]?/", $source, $res);
 
-	function ReplaceStrings($source)
-	{
-		preg_match_all("/var *(_\w+)\=\[\"(.*?)\"\];/",$source,$out);
+        return (count($res) > 0);
+    }
 
-	}
-	
+    function Unpack($source)
+    {
+        preg_match_all("/}\('(.*)', *(\d+), *(\d+), *'(.*?)'\.split\('\|'\)/", $source, $out);
+
+
+        // Payload
+        $this->payload = $out[1][0];
+        // Words
+        $this->symtab = preg_split("/\|/", $out[4][0]);
+
+        // Radix
+        $this->radix = (int) $out[2][0];
+
+        // Words Count
+        $this->count = (int) $out[3][0];
+
+
+        if ($this->count != count($this->symtab)) return; // Malformed p.a.c.k.e.r symtab !
+
+        //ToDo: Try catch
+        $this->unbaser = new Unbaser($this->radix);
+
+        $result = preg_replace_callback(
+            '/\b\w+\b/',
+            array($this, 'Lookup'),
+            $this->payload
+        );
+        $result = str_replace('\\', '', $result);
+
+        $this->ReplaceStrings($result);
+        return $result;
+    }
+
+    function Lookup($matches)
+    {
+        $word = $matches[0];
+        $ub = $this->symtab[$this->unbaser->Unbase($word)];
+        $ret = !empty($ub) ? $ub : $word;
+        return $ret;
+    }
+
+    function ReplaceStrings($source)
+    {
+        preg_match_all("/var *(_\w+)\=\[\"(.*?)\"\];/", $source, $out);
+    }
 }
 
 class Unbaser
 {
-	private $base;
-	private $dict;
-	private $selector = 52;
-	private $ALPHABET = array(
-		52 => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOP',
-		54 => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQR',
-		62 => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
-		95 => ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
-	);
-	
-	
-	function __construct($base)
-	{
-		$this->base = $base;
-		
-		if($this->base > 62) $this->selector = 95;
-		else if($this->base > 54) $this->selector = 62;
-		else if($this->base > 52) $this->selector = 54;
-	}
-	
-	function Unbase($val)
-	{
-		if( 2 <= $this->base && $this->base <= 36)
-		{
-			return intval($val,$this->base);
-		}else{
-			if(!isset($this->dict)){
-				
-				$this->dict = array_flip(str_split($this->ALPHABET[$this->selector]));
-			}
-			$ret = 0;
-			$valArray = array_reverse(str_split($val));
-			
-			for($i = 0; $i < count($valArray) ; $i++)
-			{
-				$cipher = $valArray[$i];
-				$ret += pow($this->base, $i) * $this->dict[$cipher];
-			}
-			return $ret;
-			// UnbaseExtended($x, $base)
-		}
-	}
-	
+    private $base;
+    private $dict;
+    private $selector = 52;
+    private $ALPHABET = array(
+        52 => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOP',
+        54 => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQR',
+        62 => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+        95 => ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
+    );
+
+
+    function __construct($base)
+    {
+        $this->base = $base;
+
+        if ($this->base > 62) $this->selector = 95;
+        else if ($this->base > 54) $this->selector = 62;
+        else if ($this->base > 52) $this->selector = 54;
+    }
+
+    function Unbase($val)
+    {
+        if (2 <= $this->base && $this->base <= 36) {
+            return intval($val, $this->base);
+        } else {
+            if (!isset($this->dict)) {
+
+                $this->dict = array_flip(str_split($this->ALPHABET[$this->selector]));
+            }
+            $ret = 0;
+            $valArray = array_reverse(str_split($val));
+
+            for ($i = 0; $i < count($valArray); $i++) {
+                $cipher = $valArray[$i];
+                $ret += pow($this->base, $i) * $this->dict[$cipher];
+            }
+            return $ret;
+            // UnbaseExtended($x, $base)
+        }
+    }
 }
 
 
@@ -128,15 +122,15 @@ function abc($a52, $a10)
     $a52 = base64_decode($a52);
     $a52 = mb_convert_encoding($a52, 'ISO-8859-1', 'UTF-8');
     /*
-for ($a72 = 0x0; $a72 < 0x100; $a72++) {
-    $a54[$a72] = $a72;
-}
-*/
+    for ($a72 = 0x0; $a72 < 0x100; $a72++) {
+        $a54[$a72] = $a72;
+    }
+    */
     /*
-for ($a72 = 0x0; $a72 < 0x100; $a72++) {     //new
-    $a54[$a72] = (0x3 + $a72) % 0x100;
-}
-*/
+    for ($a72 = 0x0; $a72 < 0x100; $a72++) {     //new
+        $a54[$a72] = (0x3 + $a72) % 0x100;
+    }
+    */
     for ($a72 = 0x0; $a72 < 0x100; $a72++) {     //new
         $a54[$a72] = (0x3 + $a72 + pow(0x7c, 0x0)) % 0x100;
     }
@@ -160,13 +154,11 @@ for ($a72 = 0x0; $a72 < 0x100; $a72++) {     //new
     }
     return $a57;
 }
-
 function powvideo($source, $ip)
 {
-
     $filelink = $source;
     $link = '';
-    preg_match('/(powvideo|powvldeo)\.(net|cc|co)\/(?:embed-|iframe-|preview-|)([a-z0-9]+)/', $filelink, $m);
+    preg_match('/(powvideo|powvideo)\.(net|cc)\/(?:embed-|iframe-|preview-|)([a-z0-9]+)/', $filelink, $m);
     $id       = $m[3];
     $filelink = "https://powvldeo.co/embed-" . $id . ".html";
     //$ua       = $_SERVER["HTTP_USER_AGENT"];
@@ -180,14 +172,13 @@ function powvideo($source, $ip)
         'Cookie: ref_url=' . urlencode($filelink) . '; e_' . $id . '=123456789',
         'Upgrade-Insecure-Requests: 1'
     );
+
     $l        = "https://powvldeo.co/iframe-" . $id . "-954x562.html";
     $ch       = curl_init();
-
     curl_setopt($ch, CURLOPT_URL, $l);
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $head);
-
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
     curl_setopt($ch, CURLOPT_TIMEOUT, 15);
@@ -217,9 +208,9 @@ function powvideo($source, $ip)
 
         /* search first array var _0x1107=['asass','ssdsds',.....] */
         /*
-$c0 fisrt array
-$c1 second array (if exist) but only after replace with function abc
-*/
+    $c0 fisrt array
+    $c1 second array (if exist) but only after replace with function abc
+    */
 
         /* search first array var _0x1107=['asass','ssdsds',.....] */
         if (preg_match("/(var\s+(_0x[a-z0-9]+))\=\[(\'[a-zA-Z0-9\=\+\/]+\'\,?)+\]/ms", $h, $m)) {
@@ -392,16 +383,32 @@ $c1 second array (if exist) but only after replace with function abc
             }
         }
         /* $out */
-        echo $out;
+        //echo $out;
         $out = str_replace("(Math.round(", "", $out);
         $out = str_replace("Math.sqrt", "sqrt", $out);
         $out = str_replace("))", "", $out);
-        if (preg_match_all("/\(\"div:first\"\)\.data\(\"(\w\s*\d)\"\,(\d+)\)/", $out, $u)) {
+        if (preg_match_all("/\\$\(\"([a-zA-Z0-9\.\:\_\-]+)\"\)\.data\(\"(\w\s*\d)\"\,(\d+)\)/", $out, $u)) {
+            for ($k = 0; $k < count($u[0]); $k++) {
+                $out = str_replace($u[0][$k] . ";", "", $out);
+                $out = str_replace('$("' . $u[1][$k] . '").data("' . $u[2][$k] . '")', $u[3][$k], $out);
+            }
+        }
+        // $out;
+
+        if (preg_match_all("/\(\"body\"\)\.data\(\"(\w\s*\d)\"\,(\d+)\)/", $out, $u)) {
+            for ($k = 0; $k < count($u[0]); $k++) {
+                $out = str_replace("$" . $u[0][$k] . ";", "", $out);
+                $out = str_replace('$("body").data("' . $u[1][$k] . '")', $u[2][$k], $out);
+            }
+        }
+        // new
+        if (preg_match_all("/\(\"div\:first\"\)\.data\(\"(\w\s*\d)\"\,(\d+)\)/", $out, $u)) {
             for ($k = 0; $k < count($u[0]); $k++) {
                 $out = str_replace("$" . $u[0][$k] . ";", "", $out);
                 $out = str_replace('$("div:first").data("' . $u[1][$k] . '")', $u[2][$k], $out);
             }
         }
+        //
         $out = str_replace('"', "", $out);
         /* now is like array_splice($r, 3, 1);$r[388&15]=array_splice($r,388>>(3+3), 1, $r[388&15])[0]; etc */
         $d   = str_replace("r.splice(", "array_splice(\$r,", $out);
@@ -419,5 +426,6 @@ $c1 second array (if exist) but only after replace with function abc
     } else {
         $link = "";
     }
+
     return $link;
 }
