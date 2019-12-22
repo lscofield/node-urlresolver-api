@@ -1,5 +1,5 @@
 {
-    "skk" : "YOUR_SIGNATURE_KEY",
+    "skk": "YOUR_SIGNATURE_KEY",
     "trolls": [
         "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
         "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
@@ -14,5 +14,31 @@
         "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4",
         "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4",
         "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4"
+    ],
+    "servers": [
+        "cloudvideo",
+        "onlystream",
+        "clipwatching",
+        "vidoza",
+        "vidlox",
+        "gounlimited",
+        "vidia",
+        "jetload",
+        "vidcloud",
+        "videomega",
+        "mixdrop",
+        "uqload",
+        "jawcloud",
+        "mp4upload",
+        "ok",
+        "vup",
+        "videobin",
+        "openplay",
+        "archive",
+        "veoh",
+        "gamovideo",
+        "streamplay",
+        "powvideo",
+        "prostream"
     ]
 }
