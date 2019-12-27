@@ -41,12 +41,12 @@ exports.index = function (req, res) {
                 } catch (rt) { }
             }
             if (found != '') {
-                execPhp('lib/unpacker.php', '/usr/bin/php', function (error, php, output) {
+                execPhp('../lib/unpacker.php', '/usr/bin/php', function (error, php, output) {
                     php.nodeunpack(found, function (error, result, output, printed) {
                         if (error) {
                             mp4 = '';
                         } else {
-                            var mp4Regex = /Player\(\s*\{sources:\s*\[(.*?)\]/s;
+                            var mp4Regex = /Player\s*\(\s*\{\s*sources:\s*\[(.*?)\]/s;
                             var match = mp4Regex.exec(result);
                             var json = match[1] && match[1] != '' ? `[${match[1]}]` : null;
                             if (json) {
@@ -64,7 +64,7 @@ exports.index = function (req, res) {
                             } else mp4 = null;
                         }
 
-                        mp4 = mp4 == null ? '' : mp4;
+                        mp4 = mp4 == null ? '' : mp4.trim();
 
                         res.json({ status: mp4 == '' ? 'error' : 'ok', url: mp4 });
                     });
