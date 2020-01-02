@@ -127,9 +127,9 @@ function streamplay($base64)
                 $srt = "https://streamplay.to" . $srt;
         }
         /*
-    $c0 fisrt array
-    $c1 second array (if exist) but only after replace with function abc
-    */
+        $c0 fisrt array
+        $c1 second array (if exist) but only after replace with function abc
+        */
 
         /* search first array var _0x1107=['asass','ssdsds',.....] */
         if (preg_match("/(var\s+(_0x[a-z0-9]+))\=\[(\'[a-zA-Z0-9\=\+\/]+\'\,?)+\]/ms", $h, $m)) {
@@ -195,6 +195,7 @@ function streamplay($base64)
                     }
                 }
                 /* now $h contain  var _0x1d4745=r.splice ..... eval(_0x1d4745) */
+                $h = str_replace("'", "", $h);
                 if (preg_match("/((\w)\.splice.*?)eval/ms", $h, $e)) {
                     $let = $e[2];
                     /* now is "r" - for future.... */
@@ -213,6 +214,7 @@ function streamplay($base64)
                 }
                 //echo $h;
                 /* now $h contain  var _0x1d4745=r.splice ..... eval(_0x1d4745) */
+                $h = str_replace("'", "", $h);
                 if (preg_match("/((\w)\.splice.*?)eval/ms", $h, $e)) {
                     $out = str_replace(";;", ";", $e[1]);
                 } else {
@@ -239,6 +241,7 @@ function streamplay($base64)
                 for ($z = 0; $z < count($p[0]); $z++) {
                     $h = str_replace($p[0][$z], abc($c0[hexdec($p[2][$z])], $p[3][$z]), $h);
                 }
+                $h = str_replace("'", "", $h);
                 if (preg_match("/((\w)\.splice.*?)eval/ms", $h, $e)) {
                     $out = str_replace(";;", ";", $e[1]);
                 } else {
@@ -289,6 +292,7 @@ function streamplay($base64)
                     }
                 }
                 /* now $h contain  var _0x1d4745=r.splice ..... eval(_0x1d4745) */
+                $h = str_replace("'", "", $h);
                 if (preg_match("/((\w)\.splice.*?)eval/ms", $h, $e)) {
                     $let = $e[2];
                     //print_r ($e);
@@ -300,10 +304,20 @@ function streamplay($base64)
             }
         }
         /* $out */
-        // echo $out."<BR>";
+        //echo $out."<BR>";
+        $out = preg_replace("/Math\.(\w+)/", "$1", $out);
+        $out = preg_replace("/Math\[\"(\w+)\"\]/", "$1", $out);
         $out = str_replace("(Math.round(", "", $out);
         $out = str_replace("Math.sqrt", "sqrt", $out);
+        $out = str_replace('Math["sqrt"]', 'sqrt', $out);
+
         $out = str_replace("))", "", $out);
+        if (preg_match_all("/\\$\(\"([a-zA-Z0-9\.\:\_\-]+)\"\)\.data\(\"(\w\s*\d)\"\,(\d+)\)/", $out, $u)) {
+            for ($k = 0; $k < count($u[0]); $k++) {
+                $out = str_replace($u[0][$k] . ";", "", $out);
+                $out = str_replace('$("' . $u[1][$k] . '").data("' . $u[2][$k] . '")', $u[3][$k], $out);
+            }
+        }
         if (preg_match_all("/\(\"body\"\)\.data\(\"(\w\s*\d)\"\,(\d+)\)/", $out, $u)) {
             //print_r ($u);
             for ($k = 0; $k < count($u[0]); $k++) {
@@ -311,6 +325,14 @@ function streamplay($base64)
                 $out = str_replace('$("body").data("' . $u[1][$k] . '")', $u[2][$k], $out);
             }
         }
+        // new
+        if (preg_match_all("/\(\"div\:first\"\)\.data\(\"(\w\s*\d)\"\,(\d+)\)/", $out, $u)) {
+            for ($k = 0; $k < count($u[0]); $k++) {
+                $out = str_replace("$" . $u[0][$k] . ";", "", $out);
+                $out = str_replace('$("div:first").data("' . $u[1][$k] . '")', $u[2][$k], $out);
+            }
+        }
+        //
         $out = str_replace('"', "", $out);
         /* now is like array_splice($r, 3, 1);$r[388&15]=array_splice($r,388>>(3+3), 1, $r[388&15])[0]; etc */
         $d   = str_replace("r.splice(", "array_splice(\$r,", $out);

@@ -110,8 +110,6 @@ class Unbaser
         }
     }
 }
-
-
 function abc($a52, $a10)
 {
     $a54 = array();
@@ -161,18 +159,16 @@ function powvideo($source, $ip)
     preg_match('/(powvideo|powvideo)\.(net|cc)\/(?:embed-|iframe-|preview-|)([a-z0-9]+)/', $filelink, $m);
     $id       = $m[3];
     $filelink = "https://powvldeo.co/embed-" . $id . ".html";
-    //$ua       = $_SERVER["HTTP_USER_AGENT"];
     $head = array(
         "REMOTE_ADDR: $ip", "HTTP_X_FORWARDED_FOR: $ip", "X-Forwarded-For: $ip", "HTTP_X_REAL_IP: $ip", "X_FORWARDED_FOR: $ip",
         'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language: ro-RO,ro;q=0.8,en-US;q=0.6,en-GB;q=0.4,en;q=0.2',
         'Accept-Encoding: deflate',
         'Connection: keep-alive',
-        'referer: https://powvldeo.co/preview-' . $id . '-1280x665.html',
+        'Referer: https://powvldeo.co/preview-' . $id . '-1280x665.html',
         'Cookie: ref_url=' . urlencode($filelink) . '; e_' . $id . '=123456789',
         'Upgrade-Insecure-Requests: 1'
     );
-
     $l        = "https://powvldeo.co/iframe-" . $id . "-954x562.html";
     $ch       = curl_init();
     curl_setopt($ch, CURLOPT_URL, $l);
@@ -384,8 +380,11 @@ function powvideo($source, $ip)
         }
         /* $out */
         //echo $out;
+        $out = preg_replace("/Math\.(\w+)/", "$1", $out);
+        $out = preg_replace("/Math\[\"(\w+)\"\]/", "$1", $out);
         $out = str_replace("(Math.round(", "", $out);
         $out = str_replace("Math.sqrt", "sqrt", $out);
+        $out = str_replace('Math["sqrt"]', 'sqrt', $out);
         $out = str_replace("))", "", $out);
         if (preg_match_all("/\\$\(\"([a-zA-Z0-9\.\:\_\-]+)\"\)\.data\(\"(\w\s*\d)\"\,(\d+)\)/", $out, $u)) {
             for ($k = 0; $k < count($u[0]); $k++) {
@@ -393,7 +392,7 @@ function powvideo($source, $ip)
                 $out = str_replace('$("' . $u[1][$k] . '").data("' . $u[2][$k] . '")', $u[3][$k], $out);
             }
         }
-        // $out;
+        //echo $out;
 
         if (preg_match_all("/\(\"body\"\)\.data\(\"(\w\s*\d)\"\,(\d+)\)/", $out, $u)) {
             for ($k = 0; $k < count($u[0]); $k++) {
