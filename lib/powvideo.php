@@ -385,6 +385,7 @@ function powvideo($source, $ip)
         $out = str_replace("(Math.round(", "", $out);
         $out = str_replace("Math.sqrt", "sqrt", $out);
         $out = str_replace('Math["sqrt"]', 'sqrt', $out);
+        $out=str_replace('Math["sq"+"rt"]','sqrt',$out);
         $out = str_replace("))", "", $out);
         if (preg_match_all("/\\$\(\"([a-zA-Z0-9\.\:\_\-]+)\"\)\.data\(\"(\w\s*\d)\"\,(\d+)\)/", $out, $u)) {
             for ($k = 0; $k < count($u[0]); $k++) {
