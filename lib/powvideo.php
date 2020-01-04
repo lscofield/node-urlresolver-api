@@ -110,6 +110,7 @@ class Unbaser
         }
     }
 }
+
 function abc($a52, $a10)
 {
     $a54 = array();
@@ -152,11 +153,12 @@ function abc($a52, $a10)
     }
     return $a57;
 }
+
 function powvideo($source, $ip)
 {
     $filelink = $source;
     $link = '';
-    preg_match('/(powvideo|powvideo)\.(net|cc)\/(?:embed-|iframe-|preview-|)([a-z0-9]+)/', $filelink, $m);
+    preg_match('/(powvideo|powvldeo|powv1deo)\.(net|cc)\/(?:embed-|iframe-|preview-|)([a-z0-9]+)/', $filelink, $m);
     $id       = $m[3];
     $filelink = "https://powvldeo.co/embed-" . $id . ".html";
     $head = array(
@@ -382,10 +384,11 @@ function powvideo($source, $ip)
         //echo $out;
         $out = preg_replace("/Math\.(\w+)/", "$1", $out);
         $out = preg_replace("/Math\[\"(\w+)\"\]/", "$1", $out);
+        $out = preg_replace("/Math\[\"(\w+)\"\s*\+\s*\"(\w+)\"\]/", "$1$2", $out);
+        //echo $out;
         $out = str_replace("(Math.round(", "", $out);
         $out = str_replace("Math.sqrt", "sqrt", $out);
         $out = str_replace('Math["sqrt"]', 'sqrt', $out);
-        $out=str_replace('Math["sq"+"rt"]','sqrt',$out);
         $out = str_replace("))", "", $out);
         if (preg_match_all("/\\$\(\"([a-zA-Z0-9\.\:\_\-]+)\"\)\.data\(\"(\w\s*\d)\"\,(\d+)\)/", $out, $u)) {
             for ($k = 0; $k < count($u[0]); $k++) {
@@ -393,7 +396,7 @@ function powvideo($source, $ip)
                 $out = str_replace('$("' . $u[1][$k] . '").data("' . $u[2][$k] . '")', $u[3][$k], $out);
             }
         }
-        //echo $out;
+        // echo $out;
 
         if (preg_match_all("/\(\"body\"\)\.data\(\"(\w\s*\d)\"\,(\d+)\)/", $out, $u)) {
             for ($k = 0; $k < count($u[0]); $k++) {
