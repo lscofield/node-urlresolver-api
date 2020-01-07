@@ -211,11 +211,13 @@ function powvideo($source, $ip)
     */
 
         /* search first array var _0x1107=['asass','ssdsds',.....] */
-        if (preg_match("/(var\s+(_0x[a-z0-9]+))\=\[(\'[a-zA-Z0-9\=\+\/]+\'\,?)+\]/ms", $h, $m)) {
+        if (preg_match("/(var\s+(_0x[a-z0-9]+))\=\[(\'[a-zA-Z0-9\=\+\/]+\'\,?)+\]/", $h, $m)) {
+
             $php_code = str_replace($m[1], "\$c0", $m[0]) . ";";
             eval($php_code);
             //print_r ($c0);
             /* rotate with 0xd0 search (_0x1107,0xd0)) */
+
             $pat = "/\(" . $m[2] . "\,(0x[a-z0-9]+)/";
             if (preg_match($pat, $h, $n)) {
                 $x = hexdec($n[1]);
@@ -286,14 +288,16 @@ function powvideo($source, $ip)
                 $func = $f[1];
                 /* find and replace _0xfcc8('0x24','EOVX') with abc(a,b) */
                 $pat  = "/(" . $func . ")\(\'(0x[a-z0-9]+)\',\s?\'(.*?)\'\)/ms";
+
                 preg_match_all($pat, $h, $p);
                 for ($z = 0; $z < count($p[0]); $z++) {
                     $h = str_replace($p[0][$z], abc($c0[hexdec($p[2][$z])], $p[3][$z]), $h);
                 }
-                //echo $h;
+
                 /* now $h contain  var _0x1d4745=r.splice ..... eval(_0x1d4745) */
                 $h = str_replace("'", "", $h);
                 if (preg_match("/((\w)\.splice.*?)eval/ms", $h, $e)) {
+
                     $out = str_replace(";;", ";", $e[1]);
                 } else {
                     $out = "";
@@ -382,13 +386,14 @@ function powvideo($source, $ip)
         }
         /* $out */
         //echo $out;
-        $out = preg_replace("/Math\.(\w+)/", "$1", $out);
-        $out = preg_replace("/Math\[\"(\w+)\"\]/", "$1", $out);
-        $out = preg_replace("/Math\[\"(\w+)\"\s*\+\s*\"(\w+)\"\]/", "$1$2", $out);
-        //echo $out;
-        $out = str_replace("(Math.round(", "", $out);
-        $out = str_replace("Math.sqrt", "sqrt", $out);
-        $out = str_replace('Math["sqrt"]', 'sqrt', $out);
+        $out = str_replace("Math.", "", $out);
+        $out = preg_replace_callback(
+            "/Math\[(.*?)\]/",
+            function ($matches) {
+                return preg_replace("/(\s|\"|\+)/", "", $matches[1]);;
+            },
+            $out
+        );
         $out = str_replace("))", "", $out);
         if (preg_match_all("/\\$\(\"([a-zA-Z0-9\.\:\_\-]+)\"\)\.data\(\"(\w\s*\d)\"\,(\d+)\)/", $out, $u)) {
             for ($k = 0; $k < count($u[0]); $k++) {
@@ -396,7 +401,7 @@ function powvideo($source, $ip)
                 $out = str_replace('$("' . $u[1][$k] . '").data("' . $u[2][$k] . '")', $u[3][$k], $out);
             }
         }
-        // echo $out;
+        //echo $out;
 
         if (preg_match_all("/\(\"body\"\)\.data\(\"(\w\s*\d)\"\,(\d+)\)/", $out, $u)) {
             for ($k = 0; $k < count($u[0]); $k++) {
@@ -405,23 +410,30 @@ function powvideo($source, $ip)
             }
         }
         // new
-        if (preg_match_all("/\(\"div\:first\"\)\.data\(\"(\w\s*\d)\"\,(\d+)\)/", $out, $u)) {
+        if (preg_match_all("/\(\"div\:first\"\)\.data\(\"(\w\s*\d)\"\,(.*?);/", $out, $u)) {
             for ($k = 0; $k < count($u[0]); $k++) {
-                $out = str_replace("$" . $u[0][$k] . ";", "", $out);
-                $out = str_replace('$("div:first").data("' . $u[1][$k] . '")', $u[2][$k], $out);
+                $out = str_replace("$" . $u[0][$k] . "", "", $out);
+                $out = str_replace('$("div:first").data("' . $u[1][$k] . '")', $u[2][$k] . ')', $out);
             }
         }
+
+
         //
+
         $out = str_replace('"', "", $out);
+
         /* now is like array_splice($r, 3, 1);$r[388&15]=array_splice($r,388>>(3+3), 1, $r[388&15])[0]; etc */
         $d   = str_replace("r.splice(", "array_splice(\$r,", $out);
         $d   = str_replace("r.splice (", "array_splice(\$r,", $d);
         $d   = str_replace("r[", "\$r[", $d);
 
+        //die();
+
         if (preg_match("/(array\_splice(.*))\;/", $d, $f)) {
             $d = $f[0];
         }
         $r = str_split(strrev($a145));
+
         eval($d);
         $x    = implode($r);
         $link = str_replace($a145, $x, $link);
