@@ -110,8 +110,7 @@ class Unbaser
         }
     }
 }
-
-function abc($a52, $a10)
+function abc($a52, $a10, &$mod)
 {
     $a54 = array();
     $a55 = 0x0;
@@ -120,11 +119,11 @@ function abc($a52, $a10)
     $a58 = '';
     $a52 = base64_decode($a52);
     $a52 = mb_convert_encoding($a52, 'ISO-8859-1', 'UTF-8');
-
+    /*
     for ($a72 = 0x0; $a72 < 0x100; $a72++) {
         $a54[$a72] = $a72;
     }
-
+    */
     /*
     for ($a72 = 0x0; $a72 < 0x100; $a72++) {     //new
         $a54[$a72] = (0x3 + $a72) % 0x100;
@@ -135,6 +134,11 @@ function abc($a52, $a10)
         $a54[$a72] = (0x3 + $a72 + pow(0x7c,0x0)) % 0x100;
     }
     */
+
+    for ($a72 = 0x0; $a72 < 0x100; $a72++) {
+        eval($mod);
+    }
+
     for ($a72 = 0x0; $a72 < 0x100; $a72++) {
         $a55       = ($a55 + $a54[$a72] + ord($a10[($a72 % strlen($a10))])) % 0x100;
         $a56       = $a54[$a72];
@@ -159,6 +163,7 @@ function powvideo($source, $ip)
 {
     $filelink = $source;
     $link = '';
+    $mod = '';
     preg_match('/(powvideo|powvldeo|powv1deo)\.(net|cc)\/(?:embed-|iframe-|preview-|)([a-z0-9]+)/', $filelink, $m);
     $id       = $m[3];
     $filelink = "https://powvldeo.co/embed-" . $id . ".html";
@@ -180,22 +185,24 @@ function powvideo($source, $ip)
     curl_setopt($ch, CURLOPT_HTTPHEADER, $head);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 9);
     $h = curl_exec($ch);
     curl_close($ch);
 
     $h = str_replace("/player7", "https://povvideo.net/player7", $h);
     $h = str_replace("/js", "https://povvideo.net/js", $h);
     //file_put_contents("s1.html",$h);
-    //die();
 
     if (strpos($h, "function getCalcReferrer") !== false) {
         $t1 = explode("function getCalcReferrer", $h);
         $h  = $t1[1];
     }
     //echo $h;
+    //file_put_contents("pow.txt",$h);
     $jsu   = new JavaScriptUnpacker();
     $out   = $jsu->Unpack($h);
+    //echo $out;
+    //die();
     if (preg_match('/([http|https][\.\d\w\-\.\/\\\:\?\&\#\%\_]*(\.mp4))/', $out, $m)) {
         $link = $m[1];
         $t1   = explode("/", $link);
@@ -205,20 +212,36 @@ function powvideo($source, $ip)
             if (strpos("http", $srt) === false && $srt)
                 $srt = "https://powvideo.net" . $srt;
         }
-
         /* search first array var _0x1107=['asass','ssdsds',.....] */
         /*
     $c0 fisrt array
     $c1 second array (if exist) but only after replace with function abc
     */
-
+        /* fix function abc() */
+        $t1 = explode('decodeURIComponent', $h);
+        $t2 = explode('{', $t1[1]);
+        $t3 = explode(';', $t2[1]);
+        $mod = $t3[0];
+        $mod = str_replace("Math.", "", $mod);
+        $mod = preg_replace_callback(
+            "/Math\[(.*?)\]/",
+            function ($matches) {
+                return preg_replace("/(\s|\"|\'|\+)/", "", $matches[1]);;
+            },
+            $mod
+        );
+        preg_match_all("/_0x[a-zA-A0-9]+/", $mod, $m);
+        $mod = str_replace($m[0][0], "\$a54", $mod);
+        $mod = str_replace($m[0][1], "\$a72", $mod);
+        $mod = $mod . ";";
+        /* end fix function abc */
         /* search first array var _0x1107=['asass','ssdsds',.....] */
-        if (preg_match("/(var\s+(_0x[a-z0-9]+))\=\[(\'[a-zA-Z0-9\=\+\/]+\'\,?)+\]/ms", $h, $m)) {
+        if (preg_match("/(var\s+(_0x[a-z0-9_]+))\=\[(\'[a-zA-Z0-9_\=\+\/]+\'\,?)+\]/ms", $h, $m)) {
             $php_code = str_replace($m[1], "\$c0", $m[0]) . ";";
             eval($php_code);
             //print_r ($c0);
             /* rotate with 0xd0 search (_0x1107,0xd0)) */
-            $pat = "/\(" . $m[2] . "\,(0x[a-z0-9]+)/";
+            $pat = "/\(" . $m[2] . "\,(0x[a-z0-9_]+)/";
             if (preg_match($pat, $h, $n)) {
                 $x = hexdec($n[1]);
                 for ($k = 0; $k < $x; $k++) {
@@ -229,19 +252,20 @@ function powvideo($source, $ip)
             $h = str_replace("+", "", $h);
             /* check if exist second array and get replacement for abc function and slice*/
             /* search Array[_0x3504(_0xfcc8('0x22','uSSR'))] */
-            if (preg_match("/Array\[(_0x[a-z0-9]+)\((_0x[a-z0-9]+)\(/", $h, $f)) {
+            if (preg_match("/Array\[(_0x[a-z0-9_]+)\((_0x[a-z0-9_]+)\(/", $h, $f)) {
                 $func  = $f[2];
                 $func1 = $f[1];
                 /* find and replace _0xfcc8('0x24','EOVX') with abc(a,b) */
-                $pat   = "/(" . $func . ")\(\'(0x[a-z0-9]+)\',\s?\'(.*?)\'\)/"; //better
+                $pat   = "/(" . $func . ")\(\'(0x[a-z0-9_]+)\',\s?\'(.*?)\'\)/"; //better
                 if (preg_match_all($pat, $h, $p)) {
                     for ($z = 0; $z < count($p[0]); $z++) {
-                        $h = str_replace($p[0][$z], "'" . abc($c0[hexdec($p[2][$z])], $p[3][$z]) . "'", $h);
+                        $h = str_replace($p[0][$z], "'" . abc($c0[hexdec($p[2][$z])], $p[3][$z],  $mod) . "'", $h);
                     }
                 }
                 //echo $h;
+                //die();
                 /* search for second array var _0x13e4=[xcxcxc,xcxc,xcxcx ...] */
-                if (preg_match_all("/(var\s+(_0x[a-z0-9]+))\=\[(\'[a-zA-Z0-9\=\+\/]+\'\,?)+\]/ms", $h, $m)) {
+                if (preg_match_all("/(var\s+(_0x[a-z0-9_]+))\=\[(\'[a-zA-Z0-9_\=\+\/]+\'\,?)+\]/ms", $h, $m)) {
                     //print_r ($m);
                     if (isset($m[1][1])) {
                         $php_code = $m[0][1];
@@ -250,7 +274,7 @@ function powvideo($source, $ip)
                         eval($php_code);
                         //print_r ($c1);
                         //die();
-                        $pat = "/\(" . $m[2][1] . "\,(0x[a-z0-9]+)/ms";
+                        $pat = "/\(" . $m[2][1] . "\,(0x[a-z0-9_]+)/ms";
                         if (preg_match($pat, $h, $n)) {
                             $x = hexdec($n[1]);
                             for ($k = 0; $k < $x; $k++) {
@@ -259,8 +283,8 @@ function powvideo($source, $ip)
                         }
                         //print_r ($c1);
                         /* search and replace _0x3504(0x6) etc with second array $c1 */
-                        $pat = "/" . $func1 . "\(\'(0x[0-9a-f]+)\'\)/ms";
-                        $pat1   = "/(" . $func1 . ")\(\'(0x[a-z0-9]+)\',\s?\'(.*?)\'\)/"; //better
+                        $pat = "/" . $func1 . "\(\'(0x[0-9a-z_]+)\'\)/ms";
+                        $pat1   = "/(" . $func1 . ")\(\'(0x[a-z0-9_]+)\',\s?\'(.*?)\'\)/"; //better
                         if (preg_match_all($pat, $h, $q)) {
                             for ($k = 0; $k < count($q[1]); $k++) {
                                 $h = str_replace($q[0][$k], base64_decode($c1[hexdec($q[1][$k])]), $h);
@@ -268,7 +292,7 @@ function powvideo($source, $ip)
                         } else if (preg_match_all($pat1, $h, $p)) {
                             //print_r ($p);
                             for ($z = 0; $z < count($p[0]); $z++) {
-                                $h = str_replace($p[0][$z], abc($c1[hexdec($p[2][$z])], $p[3][$z]), $h);
+                                $h = str_replace($p[0][$z], abc($c1[hexdec($p[2][$z])], $p[3][$z],  $mod), $h);
                             }
                             //echo $h;
                         }
@@ -284,15 +308,16 @@ function powvideo($source, $ip)
                     $out = "";
                 }
                 /* if not second array search Array[_0x5f0b('0x0','9YsV')] */
-            } else if (preg_match("/Array\[(_0x[a-z0-9]+)\(\'0x/ms", $h, $f)) {
+            } else if (preg_match("/Array\[(_0x[a-z0-9_]+)\(\'0x/ms", $h, $f)) {
                 $func = $f[1];
                 /* find and replace _0xfcc8('0x24','EOVX') with abc(a,b) */
-                $pat  = "/(" . $func . ")\(\'(0x[a-z0-9]+)\',\s?\'(.*?)\'\)/ms";
+                $pat  = "/(" . $func . ")\(\'(0x[a-z0-9_]+)\',\s?\'(.*?)\'\)/ms";
                 preg_match_all($pat, $h, $p);
                 for ($z = 0; $z < count($p[0]); $z++) {
-                    $h = str_replace($p[0][$z], abc($c0[hexdec($p[2][$z])], $p[3][$z]), $h);
+                    $h = str_replace($p[0][$z], abc($c0[hexdec($p[2][$z])], $p[3][$z], $mod), $h);
                 }
                 //echo $h;
+                //die();
                 /* now $h contain  var _0x1d4745=r.splice ..... eval(_0x1d4745) */
                 $h = str_replace("'", "", $h);
                 //echo $h;
@@ -306,10 +331,11 @@ function powvideo($source, $ip)
             /* $out can like this r.splice( "3", 1);$("body").data("f 0",197);r[$("body").data("f 0")&15]=r.splice($("body").data("f 0")>>(33), 1 */
 
             //echo $h;
-        } else if (preg_match("/(function\s?(_0x[a-z0-9]+)\(\)\{return)\[(\'[a-zA-Z0-9\=\+\/]+\'\,?)+\]/ms", $h, $m)) {
+            //die();
+        } else if (preg_match("/(function\s?(_0x[a-z0-9_]+)\(\)\{return)\[(\'[a-zA-Z0-9_\=\+\/]+\'\,?)+\]/ms", $h, $m)) {
             $php_code = str_replace($m[1], "\$c0=", $m[0]) . ";";
             eval($php_code);
-            $pat = "/\(" . $m[2] . "\,(0x[a-z0-9]+)/";
+            $pat = "/\(" . $m[2] . "\,(0x[a-z0-9_]+)/";
             if (preg_match($pat, $h, $n)) {
                 $x = hexdec($n[1]);
                 for ($k = 0; $k < $x; $k++) {
@@ -317,13 +343,13 @@ function powvideo($source, $ip)
                 }
             }
             $h = str_replace("+", "", $h);
-            if (preg_match("/Array\[(_0x[a-z0-9]+)\(\'0x/ms", $h, $f)) {
+            if (preg_match("/Array\[(_0x[a-z0-9_]+)\(\'0x/ms", $h, $f)) {
                 $func = $f[1];
                 /* find and replace _0xfcc8('0x24','EOVX') with abc(a,b) */
-                $pat  = "/(" . $func . ")\(\'(0x[a-z0-9]+)\',\s?\'(.*?)\'\)/ms";
+                $pat  = "/(" . $func . ")\(\'(0x[a-z0-9_]+)\',\s?\'(.*?)\'\)/ms";
                 preg_match_all($pat, $h, $p);
                 for ($z = 0; $z < count($p[0]); $z++) {
-                    $h = str_replace($p[0][$z], abc($c0[hexdec($p[2][$z])], $p[3][$z]), $h);
+                    $h = str_replace($p[0][$z], abc($c0[hexdec($p[2][$z])], $p[3][$z], $mod), $h);
                 }
                 $h = str_replace("'", "", $h);
                 if (preg_match("/((\w)\.splice.*?)eval/ms", $h, $e)) {
@@ -331,18 +357,18 @@ function powvideo($source, $ip)
                 } else {
                     $out = "";
                 }
-            } else if (preg_match("/Array\[(_0x[a-z0-9]+)\((_0x[a-z0-9]+)\(/", $h, $f)) {
+            } else if (preg_match("/Array\[(_0x[a-z0-9_]+)\((_0x[a-z0-9_]+)\(/", $h, $f)) {
                 $func  = $f[2];
                 $func1 = $f[1];
                 /* find and replace _0xfcc8('0x24','EOVX') with abc(a,b) */
-                $pat   = "/(" . $func . ")\(\'(0x[a-z0-9]+)\',\s?\'(.*?)\'\)/"; //better
+                $pat   = "/(" . $func . ")\(\'(0x[a-z0-9_]+)\',\s?\'(.*?)\'\)/"; //better
                 if (preg_match_all($pat, $h, $p)) {
                     for ($z = 0; $z < count($p[0]); $z++) {
-                        $h = str_replace($p[0][$z], "'" . abc($c0[hexdec($p[2][$z])], $p[3][$z]) . "'", $h);
+                        $h = str_replace($p[0][$z], "'" . abc($c0[hexdec($p[2][$z])], $p[3][$z], $mod) . "'", $h);
                     }
                 }
                 /* search for second array var _0x13e4=[xcxcxc,xcxc,xcxcx ...] */
-                if (preg_match_all("/(var\s+(_0x[a-z0-9]+))\=\[(\'[a-zA-Z0-9\=\+\/]+\'\,?)+\]/ms", $h, $m)) {
+                if (preg_match_all("/(var\s+(_0x[a-z0-9_]+))\=\[(\'[a-zA-Z0-9_\=\+\/]+\'\,?)+\]/ms", $h, $m)) {
                     //print_r ($m);
                     if (isset($m[1][0])) {
                         $php_code = $m[0][0];
@@ -351,7 +377,7 @@ function powvideo($source, $ip)
                         eval($php_code);
                         //print_r ($c1);
                         //die();
-                        $pat = "/\(" . $m[2][0] . "\,(0x[a-z0-9]+)/ms";
+                        $pat = "/\(" . $m[2][0] . "\,(0x[a-z0-9_]+)/ms";
                         if (preg_match($pat, $h, $n)) {
                             $x = hexdec($n[1]);
                             for ($k = 0; $k < $x; $k++) {
@@ -360,8 +386,8 @@ function powvideo($source, $ip)
                         }
                         //print_r ($c1);
                         /* search and replace _0x3504(0x6) etc with second array $c1 */
-                        $pat = "/" . $func1 . "\(\'(0x[0-9a-f]+)\'\)/ms";
-                        $pat1   = "/(" . $func1 . ")\(\'(0x[a-z0-9]+)\',\s?\'(.*?)\'\)/"; //better
+                        $pat = "/" . $func1 . "\(\'(0x[0-9a-z_]+)\'\)/ms";
+                        $pat1   = "/(" . $func1 . ")\(\'(0x[a-z0-9_]+)\',\s?\'(.*?)\'\)/"; //better
                         if (preg_match_all($pat, $h, $q)) {
                             for ($k = 0; $k < count($q[1]); $k++) {
                                 $h = str_replace($q[0][$k], base64_decode($c1[hexdec($q[1][$k])]), $h);
@@ -369,7 +395,7 @@ function powvideo($source, $ip)
                         } else if (preg_match_all($pat1, $h, $p)) {
                             //print_r ($p);
                             for ($z = 0; $z < count($p[0]); $z++) {
-                                $h = str_replace($p[0][$z], abc($c1[hexdec($p[2][$z])], $p[3][$z]), $h);
+                                $h = str_replace($p[0][$z], abc($c1[hexdec($p[2][$z])], $p[3][$z], $mod), $h);
                             }
                             //echo $h;
                         }
@@ -396,7 +422,7 @@ function powvideo($source, $ip)
             },
             $out
         );
-        if (preg_match_all("/\\$\(\"([a-zA-Z0-9\.\:\_\-]+)\"\)\.data\(\"(\w\s*\d)\"\,([a-zA-Z0-9\)\(]+)\)/", $out, $u)) {
+        if (preg_match_all("/\\$\(\"([a-zA-Z0-9_\.\:\_\-]+)\"\)\.data\(\"(\w\s*\d)\"\,([a-zA-Z0-9\)\(]+)\)/", $out, $u)) {
             for ($k = 0; $k < count($u[0]); $k++) {
                 $out = str_replace($u[0][$k] . ";", "", $out);
                 $v1 = "\$v=" . $u[3][$k] . ";";
@@ -405,7 +431,7 @@ function powvideo($source, $ip)
             }
         }
         $out = str_replace('"', "", $out);
-        $out = str_replace("))", "", $out);
+        //$out=str_replace("))","",$out);
 
         /* now is like array_splice($r, 3, 1);$r[388&15]=array_splice($r,388>>(3+3), 1, $r[388&15])[0]; etc */
         $d   = str_replace("r.splice(", "array_splice(\$r,", $out);
