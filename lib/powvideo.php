@@ -110,6 +110,7 @@ class Unbaser
         }
     }
 }
+
 function abc($a52, $a10, &$mod)
 {
     $a54 = array();
@@ -189,10 +190,9 @@ function powvideo($source, $ip)
     $h = curl_exec($ch);
     curl_close($ch);
 
-    $h = str_replace("/player7", "https://povvideo.net/player7", $h);
-    $h = str_replace("/js", "https://povvideo.net/js", $h);
+    $h = str_replace("/player7", "https://powvldeo.co/player7", $h);
+    $h = str_replace("/js", "https://powvldeo.co/js", $h);
     //file_put_contents("s1.html",$h);
-
     if (strpos($h, "function getCalcReferrer") !== false) {
         $t1 = explode("function getCalcReferrer", $h);
         $h  = $t1[1];
@@ -259,7 +259,7 @@ function powvideo($source, $ip)
                 $pat   = "/(" . $func . ")\(\'(0x[a-z0-9_]+)\',\s?\'(.*?)\'\)/"; //better
                 if (preg_match_all($pat, $h, $p)) {
                     for ($z = 0; $z < count($p[0]); $z++) {
-                        $h = str_replace($p[0][$z], "'" . abc($c0[hexdec($p[2][$z])], $p[3][$z],  $mod) . "'", $h);
+                        $h = str_replace($p[0][$z], "'" . abc($c0[hexdec($p[2][$z])], $p[3][$z], $mod) . "'", $h);
                     }
                 }
                 //echo $h;
@@ -292,7 +292,7 @@ function powvideo($source, $ip)
                         } else if (preg_match_all($pat1, $h, $p)) {
                             //print_r ($p);
                             for ($z = 0; $z < count($p[0]); $z++) {
-                                $h = str_replace($p[0][$z], abc($c1[hexdec($p[2][$z])], $p[3][$z],  $mod), $h);
+                                $h = str_replace($p[0][$z], abc($c1[hexdec($p[2][$z])], $p[3][$z], $mod), $h);
                             }
                             //echo $h;
                         }
@@ -329,8 +329,8 @@ function powvideo($source, $ip)
                 }
             }
             /* $out can like this r.splice( "3", 1);$("body").data("f 0",197);r[$("body").data("f 0")&15]=r.splice($("body").data("f 0")>>(33), 1 */
-
             //echo $h;
+            //echo round(sqrt(1) - sqrt(4) + sin(M_PI/2));
             //die();
         } else if (preg_match("/(function\s?(_0x[a-z0-9_]+)\(\)\{return)\[(\'[a-zA-Z0-9_\=\+\/]+\'\,?)+\]/ms", $h, $m)) {
             $php_code = str_replace($m[1], "\$c0=", $m[0]) . ";";
@@ -413,7 +413,7 @@ function powvideo($source, $ip)
             }
         }
         /* $out */
-        //echo $out;
+        //echo $out."\n"."\n";
         $out = str_replace("Math.", "", $out);
         $out = preg_replace_callback(
             "/Math\[(.*?)\]/",
@@ -422,14 +422,14 @@ function powvideo($source, $ip)
             },
             $out
         );
-        if (preg_match_all("/\\$\(\"([a-zA-Z0-9_\.\:\_\-]+)\"\)\.data\(\"(\w\s*\d)\"\,([a-zA-Z0-9\)\(]+)\)/", $out, $u)) {
+        $out = str_replace("PI", "M_PI", $out);
+        if (preg_match_all("/(\\$\(\"([a-zA-Z0-9_\.\:\_\-]+)\"\)\.data\(\"(\w+\s*\d)\")\,([a-zA-Z0-9\)\(]+)\)/", $out, $u)) {
             for ($k = 0; $k < count($u[0]); $k++) {
-                $out = str_replace($u[0][$k] . ";", "", $out);
-                $v1 = "\$v=" . $u[3][$k] . ";";
-                eval($v1);
-                $out = str_replace('$("' . $u[1][$k] . '").data("' . $u[2][$k] . '")', $v, $out);
+                $out = str_replace($u[0][$k], "\$" . str_replace(" ", "_", $u[3][$k]) . "=" . $u[4][$k] . "", $out);
+                $out = str_replace($u[1][$k] . ")", "\$" . str_replace(" ", "_", $u[3][$k]), $out);
             }
         }
+        //echo $out."\n";
         $out = str_replace('"', "", $out);
         //$out=str_replace("))","",$out);
 
@@ -445,7 +445,6 @@ function powvideo($source, $ip)
         eval($d);
         $x    = implode($r);
         $link = str_replace($a145, $x, $link);
-        //var_dump (get_headers($link));
     } else {
         $link = "";
     }
