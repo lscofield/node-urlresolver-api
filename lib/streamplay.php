@@ -114,6 +114,7 @@ function streamplay($base64)
         $h  = $t1[1];
     }
     //echo $h;
+    //file_put_contents("stream.txt",$h);
     $jsu = new JavaScriptUnpacker();
     $out = $jsu->Unpack($h);
     if (preg_match('/([http|https][\.\d\w\-\.\/\\\:\?\&\#\%\_]*(\.mp4))/', $out, $m)) {
@@ -127,9 +128,9 @@ function streamplay($base64)
                 $srt = "https://streamplay.to" . $srt;
         }
         /*
-    $c0 fisrt array
-    $c1 second array (if exist) but only after replace with function abc
-    */
+        $c0 fisrt array
+        $c1 second array (if exist) but only after replace with function abc
+        */
         /* fix function abc() */
         $t1 = explode('decodeURIComponent', $h);
         $t2 = explode('{', $t1[1]);
