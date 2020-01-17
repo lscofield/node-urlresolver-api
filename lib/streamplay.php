@@ -328,6 +328,7 @@ function streamplay($base64)
         }
         /* $out */
         //echo $out."<BR>";
+        $out = str_replace(" ", "", $out);
         $out = str_replace("Math.", "", $out);
         $out = preg_replace_callback(
             "/Math\[(.*?)\]/",
@@ -336,14 +337,18 @@ function streamplay($base64)
             },
             $out
         );
-
-
-        if (preg_match_all("/\\$\(\"([a-zA-Z0-9\.\:\_\-]+)\"\)\.data\(\"(\w\s*\d)\"\,([a-zA-Z0-9\)\(]+)\)/", $out, $u)) {
+        $out = preg_replace_callback(
+            "/\[([a-dt\"\+]+)\]/",
+            function ($matches) {
+                return "." . preg_replace("/(\s|\"|\+)/", "", $matches[1]);;
+            },
+            $out
+        );
+        $out = str_replace("PI", "M_PI", $out);
+        if (preg_match_all("/(\\$\(\"([a-zA-Z0-9_\.\:\_\-]+)\"\)\.data\(\"(\w+\s*\d)\")\,([a-zA-Z0-9\)\(]+)\)/", $out, $u)) {
             for ($k = 0; $k < count($u[0]); $k++) {
-                $out = str_replace($u[0][$k] . ";", "", $out);
-                $v1 = "\$v=" . $u[3][$k] . ";";
-                eval($v1);
-                $out = str_replace('$("' . $u[1][$k] . '").data("' . $u[2][$k] . '")', $v, $out);
+                $out = str_replace($u[0][$k], "\$" . str_replace(" ", "_", $u[3][$k]) . "=" . $u[4][$k] . "", $out);
+                $out = str_replace($u[1][$k] . ")", "\$" . str_replace(" ", "_", $u[3][$k]), $out);
             }
         }
 
@@ -360,7 +365,6 @@ function streamplay($base64)
         eval($d);
         $x    = implode($r);
         $link = str_replace($a145, $x, $link);
-        //var_dump (get_headers($link));
     } else {
         $link = "";
     }

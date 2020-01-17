@@ -413,7 +413,7 @@ function powvideo($source, $ip)
             }
         }
         /* $out */
-        //echo $out."\n"."\n";
+        $out = str_replace(" ", "", $out);
         $out = str_replace("Math.", "", $out);
         $out = preg_replace_callback(
             "/Math\[(.*?)\]/",
@@ -422,22 +422,32 @@ function powvideo($source, $ip)
             },
             $out
         );
+        $out = preg_replace_callback(
+            "/\[([a-dt\"\+]+)\]/",
+            function ($matches) {
+                return "." . preg_replace("/(\s|\"|\+)/", "", $matches[1]);;
+            },
+            $out
+        );
         $out = str_replace("PI", "M_PI", $out);
+        if (preg_match_all("/\/\*(.*?)\*\//", $out, $u)) {
+            for ($i = 0; $i < count($u[0]); $i++) {
+                $out = str_replace($u[0][$i], '', $out);
+            }
+        }
         if (preg_match_all("/(\\$\(\"([a-zA-Z0-9_\.\:\_\-]+)\"\)\.data\(\"(\w+\s*\d)\")\,([a-zA-Z0-9\)\(]+)\)/", $out, $u)) {
             for ($k = 0; $k < count($u[0]); $k++) {
                 $out = str_replace($u[0][$k], "\$" . str_replace(" ", "_", $u[3][$k]) . "=" . $u[4][$k] . "", $out);
                 $out = str_replace($u[1][$k] . ")", "\$" . str_replace(" ", "_", $u[3][$k]), $out);
             }
         }
-        //echo $out."\n";
-        $out = str_replace('"', "", $out);
-        //$out=str_replace("))","",$out);
 
+        //$out=str_replace("))","",$out);
+        $out = str_replace('"', "", $out);
         /* now is like array_splice($r, 3, 1);$r[388&15]=array_splice($r,388>>(3+3), 1, $r[388&15])[0]; etc */
         $d   = str_replace("r.splice(", "array_splice(\$r,", $out);
         $d   = str_replace("r.splice (", "array_splice(\$r,", $d);
         $d   = str_replace("r[", "\$r[", $d);
-
         if (preg_match("/(array\_splice(.*))\;/", $d, $f)) {
             $d = $f[0];
         }
