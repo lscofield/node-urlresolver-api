@@ -141,7 +141,7 @@ function powvideo($source, $ip)
     $h = curl_exec($ch);
     curl_close($ch);
 
-    include("obfJS.php");
+    include("jsabc.php");
     $jsu   = new JavaScriptUnpacker();
     $out   = $jsu->Unpack($h);
     if (preg_match('/([http|https][\.\d\w\-\.\/\\\:\?\&\#\%\_]*(\.mp4))/', $out, $m)) {
@@ -154,7 +154,7 @@ function powvideo($source, $ip)
                 $srt = "https://powvideo.net" . $srt;
         }
         $enc = $h;
-        $dec = obfJS($enc);
+        $dec = jsabc($enc);
         $dec = str_replace("Math.", "", $dec);
         $dec = preg_replace_callback(
             "/Math\[(.*?)\]/",

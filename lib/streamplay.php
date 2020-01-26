@@ -115,7 +115,7 @@ function streamplay($base64)
     }
     //echo $h;
     //file_put_contents("stream.txt",$h);
-    include("obfJS.php");
+    include("jsabc.php");
     $jsu = new JavaScriptUnpacker();
     $out = $jsu->Unpack($h);
     if (preg_match('/([http|https][\.\d\w\-\.\/\\\:\?\&\#\%\_]*(\.mp4))/', $out, $m)) {
@@ -129,7 +129,7 @@ function streamplay($base64)
                 $srt = "https://streamplay.to" . $srt;
         }
         $enc = $h;
-        $dec = obfJS($enc);
+        $dec = jsabc($enc);
         $dec = str_replace("Math.", "", $dec);
         $dec = preg_replace_callback(
             "/Math\[(.*?)\]/",
