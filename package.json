@@ -17,6 +17,7 @@
   "author": "lscofield",
   "license": "GNU",
   "dependencies": {
+    "axios": "^0.19.0",
     "body-parser": "^1.19.0",
     "cheerio": "^1.0.0-rc.3",
     "exec-php": "0.0.5",

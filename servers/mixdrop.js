@@ -47,13 +47,7 @@ exports.index = function (req, res) {
                             mp4 = '';
                         } else {
                             try {
-                                var mp4Regex = /vsrc=\s*"(([*])*.*?)"/g;
-                                if (result.includes('vsrc2'))
-                                    mp4Regex = /vsrc2=\s*"(([*])*.*?)"/g;
-                                if (result.includes('vsrc1'))
-                                    mp4Regex = /vsrc1=\s*"(([*])*.*?)"/g;
-                                if (result.includes('furl'))
-                                    mp4Regex = /furl=\s*"(([*])*.*?)"/g;
+                                var mp4Regex = /wurl=\s*"(([*])*.*?)"/g;
                                 var match = mp4Regex.exec(result);
                                 mp4 = match && match[1] != '' ? 'https:' + match[1] : null;
                             } catch (errr) {
