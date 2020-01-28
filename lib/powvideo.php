@@ -189,7 +189,7 @@ function powvideo($source, $ip)
             $rez = $m[1];
             $rez = preg_replace("/r\.splice\s*\(/", "array_splice(\$r,", $rez);
             $rez = preg_replace("/r\s*\[/", "\$r[", $rez);
-            $rez = str_replace("1+\"0\"", "10", $rez);
+            $rez = str_replace("1+\"1\"", "11", $rez);
             $rez = preg_replace("/r\s*\=/", "\$r=", $rez);
             $r = str_split(strrev($a145));
             eval($rez);

@@ -90,7 +90,7 @@ function replace_func1($c,$first,&$enc,&$atob) {
       else
        $rep=$f[0][$z];
       if ($atob)
-       $enc = str_replace($rep, "'".base64_decode($c0[hexdec($f[2][$z])])."'", $enc);
+       $enc = str_replace($rep, "'".base64_decode($c[hexdec($f[2][$z])])."'", $enc);
       else
        $enc = str_replace($rep, "'".$c[hexdec($f[2][$z])]."'", $enc);
      }
