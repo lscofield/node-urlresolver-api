@@ -129,7 +129,7 @@ function powvideo($source, $ip)
         'Cookie: ref_url=' . urlencode($filelink) . '; e_' . $id . '=123456789',
         'Upgrade-Insecure-Requests: 1'
     );
-    $l        = "https://powvldeo.co/iframe-" . $id . "-954x562.html";
+    $l        = "https://powvldeo.cc/iframe-" . $id . "-954x562.html";
     $ch       = curl_init();
     curl_setopt($ch, CURLOPT_URL, $l);
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
