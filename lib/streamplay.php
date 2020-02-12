@@ -164,7 +164,11 @@ function streamplay($base64)
             $rez = preg_replace("/r\.splice\s*\(/", "array_splice(\$r,", $rez);
             $rez = preg_replace("/r\s*\[/", "\$r[", $rez);
             $rez = str_replace("1+\"1\"", "11", $rez);
+            //$rez = str_replace("-(", "(", $rez);
             $rez = preg_replace("/r\s*\=/", "\$r=", $rez);
+            $rez = str_replace("var op=\"sqrt\";", "", $rez);
+            $rez = str_replace("op(", "sqrt(", $rez);
+            $rez = str_replace("\$r[\"splice\"](", "array_splice(\$r,", $rez);
             $r = str_split(strrev($a145));
             eval($rez);
             $x    = implode($r);
