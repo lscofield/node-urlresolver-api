@@ -189,11 +189,38 @@ function powvideo($source, $ip)
             $rez = $m[1];
             $rez = preg_replace("/r\.splice\s*\(/", "array_splice(\$r,", $rez);
             $rez = preg_replace("/r\s*\[/", "\$r[", $rez);
+            $rez = preg_replace("/r\s*\[/", "", $rez);
             $rez = str_replace("1+\"1\"", "11", $rez);
+            //$rez = str_replace("-(", "(", $rez);
             $rez = preg_replace("/r\s*\=/", "\$r=", $rez);
-            $rez = str_replace("var op=\"sqrt\";", "", $rez);
+            //var op="sqrt";
+            $rez = str_replace("var op=\"sqrt\",oi=\"5\";", "\$oi = 5;", $rez);
+            $rez = str_replace("-oi", "-\$oi", $rez);
             $rez = str_replace("op(", "sqrt(", $rez);
+            $rez = str_replace("oe(", "sqrt(", $rez);
             $rez = str_replace("\$r[\"splice\"](", "array_splice(\$r,", $rez);
+
+            $_op_ = '';
+            if (preg_match_all("/\\$\"splice\"\]\s*\(\s*\\$\s*\(\"div:first\"\).data(.*?),(.*?)\)\s*;/s", $rez, $m)) {
+
+                for ($k = 0; $k < count($m[0]); $k++) {
+                    $orig = $m[0][$k];
+                    $_op_ = str_replace("(", "", $m[1][$k]);
+                    $_op_ = str_replace(")", "", $_op_);
+                    $rep = "array_splice(\$r, \$$_op_," . $m[2][$k] . ");";
+                    $rep = str_replace("\$\$", "\$r[\$", $rep);
+                    $rez = str_replace($orig, $rep, $rez);
+                }
+            }
+
+            if (preg_match_all("/var\s*$_op_\s*=\s*(.*?)\s*;/s", $rez, $m)) {
+                for ($k = 0; $k < count($m[0]); $k++) {
+                    $orig = $m[0][$k];
+                    $rez = str_replace($orig, "", $rez);
+                    $rr = "\$" . str_replace('"', "", $m[1][$k]);
+                    $rez = implode($rr, explode("\$$_op_", $rez, 2));
+                }
+            }
             $r = str_split(strrev($a145));
             eval($rez);
             $x    = implode($r);
