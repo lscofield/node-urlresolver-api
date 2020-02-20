@@ -207,19 +207,22 @@ function powvideo($source, $ip)
                     $rez = str_replace($orig, "\$" . str_replace('"', '', explode(",", $m[1][$k])[1]) . ";", $rez);
                 }
             }
-            if (preg_match_all("/\\$\s*\(\"div:first\"\).data(.*?),(.*?)\)\s*;/s", $rez, $m)) {
+
+            if (preg_match_all("/\\$\"splice\"\]\(\\$\s*\(\"div:first\"\).data(.*?),(.*?)\)\s*\[.*?]\)/s", $rez, $m)) {
 
                 for ($k = 0; $k < count($m[0]); $k++) {
                     $orig = $m[0][$k];
                     $_op_ = "od";
-                    $inner = explode(",", explode("),", $m[2][$k])[1]);
-                    $inner = str_replace("\$\$", "\$", explode("]", $inner[1])[0]) . "," . $inner[0];
-                    $rep = "array_splice(\$r, \$$_op_," . explode("),", $m[2][$k])[1] . ");";
-
+                    $inner = explode(",", $m[2][$k]);
+                    $num = trim($inner[0]);
+                    $arr = trim(str_replace("\$\$", "\$", explode("]", $inner[1])[0]));
+                    $rep = "array_splice(\$r, \$$_op_," . $num . ",\$r[" . $arr . "])[0])";
                     $rep = str_replace("\$\$", "\$r[\$", $rep);
-                    $rez = str_replace($orig, $inner . ", " . $rep, $rez);
+                    $rez = str_replace($orig, $rep, $rez);
                 }
             }
+
+
 
             if (preg_match_all("/var\s*$_op_\s*=\s*(.*?)\s*;/s", $rez, $m)) {
 
