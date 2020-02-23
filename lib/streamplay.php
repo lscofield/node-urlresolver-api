@@ -161,53 +161,55 @@ function streamplay($base64)
         }
         if (preg_match("/((r\=)|(r\.splice)(.*?))\';eval/ms", $dec, $m)) {
             $rez = $m[1];
-            $rez = preg_replace("/r\.splice\s*\(/", "array_splice(\$r,", $rez);
-            $rez = preg_replace("/r\s*\[/", "\$r[", $rez);
-            $rez = preg_replace("/r\s*\[/", "", $rez);
-            $rez = str_replace("1+\"1\"", "11", $rez);
-            $rez = preg_replace("/r\s*\=/", "\$r=", $rez);
-            $rez = str_replace("-oi", "-\$oi", $rez);
-            $rez = str_replace("op(", "sqrt(", $rez);
-            $rez = str_replace("oe(", "sqrt(", $rez);
-            $rez = str_replace("[oe](od)", ".data()", $rez);
-            $rez = str_replace("\$r[\"splice\"](", "array_splice(\$r,", $rez);
+                $rez = preg_replace("/r\.splice\s*\(/", "array_splice(\$r,", $rez);
+                $rez = preg_replace("/r\s*\[/", "\$r[", $rez);
+                $rez = preg_replace("/r\s*\[/", "", $rez);
+                $rez = str_replace("1+\"1\"", "11", $rez);
+                $rez = preg_replace("/r\s*\=/", "\$r=", $rez);
+                $rez = str_replace("-oi", "-\$oi", $rez);
+                $rez = str_replace("op(", "sqrt(", $rez);
+                $rez = str_replace("oe(", "sqrt(", $rez);
+                $rez = str_replace("[oe](od)", ".data()", $rez);
+                $rez = str_replace("\$r[\"splice\"](", "array_splice(\$r,", $rez);
 
-            $_op_ = '';
+               
+                $_op_ = '';
 
-            if (preg_match_all("/var\s*op\s*=\s*(.*?);/s", $rez, $m)) {
+                if (preg_match_all("/var\s*op\s*=\s*(.*?);/s", $rez, $m)) {
 
-                for ($k = 0; $k < count($m[0]); $k++) {
-                    $orig = $m[0][$k];
-                    $rez = str_replace($orig, "\$" . str_replace('"', '', explode(",", $m[1][$k])[1]) . ";", $rez);
+                    for ($k = 0; $k < count($m[0]); $k++) {
+                        $orig = $m[0][$k];
+                        
+                        $rez = str_replace($orig, "\$" . str_replace('"', '', explode(",", $m[1][$k])[1]) . ";", $rez);
+                    }
                 }
-            }
 
-            if (preg_match_all("/\\$\"splice\"\]\(\\$\s*\(\"div:first\"\).data(.*?),(.*?)\)\s*\[.*?]\)/s", $rez, $m)) {
+               
+                if (preg_match_all("/\\$\"splice\"\]\(\\$\s*\(\"div:first\"\).data(.*?),(.*?)\)\s*\[.*?]\)/s", $rez, $m)) {
 
-                for ($k = 0; $k < count($m[0]); $k++) {
-                    $orig = $m[0][$k];
-                    $_op_ = "od";
-                    $inner = explode(",", $m[2][$k]);
-                    $num = trim($inner[0]);
-                    $arr = trim(str_replace("\$\$", "\$", explode("]", $inner[1])[0]));
-                    $rep = "array_splice(\$r, \$$_op_," . $num . ",\$r[" . $arr . "])[0])";
-                    $rep = str_replace("\$\$", "\$r[\$", $rep);
-                    $rez = str_replace($orig, $rep, $rez);
+                    for ($k = 0; $k < count($m[0]); $k++) {
+                        $orig = $m[0][$k];
+                        $_op_ = "od";
+                        $inner = explode(",", $m[2][$k]);
+                        $num = trim($inner[0]);
+                        $arr = "\$" . explode("\"", explode("\"", $inner[1])[1])[0];
+                        $rep = "array_splice(\$r, \$$_op_," . $num . ",\$r[" . $arr . "])[0])";
+                        $rep = str_replace("\$\$", "\$r[\$", $rep);
+                        $rez = str_replace($orig, $rep, $rez);
+                    }
                 }
-            }
 
 
 
-            if (preg_match_all("/var\s*$_op_\s*=\s*(.*?)\s*;/s", $rez, $m)) {
+                if (preg_match_all("/var\s*$_op_\s*=\s*(.*?)\s*;/s", $rez, $m)) {
 
-                for ($k = 0; $k < count($m[0]); $k++) {
-                    $orig = $m[0][$k];
-                    $rez = str_replace($orig, "", $rez);
-                    $rr = "\$" . str_replace('"', "", explode(",", $m[1][$k])[0]);
-
-                    $rez = implode($rr, explode("\$$_op_", $rez, 2));
+                    for ($k = 0; $k < count($m[0]); $k++) {
+                        $orig = $m[0][$k];
+                        $rez = str_replace($orig, "", $rez);
+                        $rr = "\$" . str_replace('"', "", explode(",", $m[1][$k])[0]);
+                        $rez = implode($rr, explode("\$$_op_", $rez, 2));
+                    }
                 }
-            }
             $r = str_split(strrev($a145));
             eval($rez);
             $x    = implode($r);
