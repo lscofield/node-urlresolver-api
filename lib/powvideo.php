@@ -111,35 +111,11 @@ class Unbaser
     }
 }
 
-function powvideo($source, $ip)
+function powvideo($source)
 {
-    $filelink = $source;
+    $h = base64_decode($source);
     $link = '';
     $mod = '';
-    preg_match('/(powvideo|powvldeo|powv1deo)\.(net|cc)\/(?:embed-|iframe-|preview-|)([a-z0-9]+)/', $filelink, $m);
-    $id       = $m[3];
-    $filelink = "https://powvldeo.co/embed-" . $id . ".html";
-    $head = array(
-        "REMOTE_ADDR: $ip", "HTTP_X_FORWARDED_FOR: $ip", "X-Forwarded-For: $ip", "HTTP_X_REAL_IP: $ip", "X_FORWARDED_FOR: $ip",
-        'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language: ro-RO,ro;q=0.8,en-US;q=0.6,en-GB;q=0.4,en;q=0.2',
-        'Accept-Encoding: deflate',
-        'Connection: keep-alive',
-        'Referer: https://powvldeo.co/preview-' . $id . '-1280x665.html',
-        'Cookie: ref_url=' . urlencode($filelink) . '; e_' . $id . '=123456789',
-        'Upgrade-Insecure-Requests: 1'
-    );
-    $l        = "https://powvldeo.cc/iframe-" . $id . "-954x562.html";
-    $ch       = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $l);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $head);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 9);
-    $h = curl_exec($ch);
-    curl_close($ch);
 
     include("jsabc.php");
     $jsu   = new JavaScriptUnpacker();

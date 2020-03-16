@@ -27,13 +27,12 @@ exports.index = function (req, res) {
         var html = Buffer.from(req.body.source, 'base64').toString('utf8');
         var mp4 = '';
 
-        const packed = packedRegex.exec(html)[1];
-        const unpacked = unpacker.unPack(packed);
-
-        const sources = jsonRegex.exec(unpacked);
-        const stream = json5.parse(sources[1]);
-
         try {
+            const packed = packedRegex.exec(html)[1];
+            const unpacked = unpacker.unPack(packed);
+
+            const sources = jsonRegex.exec(unpacked);
+            const stream = json5.parse(sources[1]);
             if (stream)
                 mp4 = stream[0];
         } catch (err) { }

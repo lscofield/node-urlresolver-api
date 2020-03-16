@@ -22,13 +22,11 @@ exports.index = function (req, res) {
     } else {
         // autorized app block
         var source = 'source' in req.body ? req.body.source : req.query.source;
-        source = Buffer.from(source, 'base64').toString('utf8');
-        const ip = (req.headers['x-forwarded-for'] || '').split(',')[0] || req.connection.remoteAddress;
         var mp4 = null;
 
         try {
             execPhp('../lib/powvideo.php', '/usr/bin/php', function (error, php, output) {
-                php.powvideo(source, ip, function (error, result, output, printed) {
+                php.powvideo(source, function (error, result, output, printed) {
                     if (error) {
                         mp4 = '';
                     } else {
