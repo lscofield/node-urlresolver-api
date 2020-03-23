@@ -28,13 +28,18 @@ exports.index = function (req, res) {
         var mp4 = '';
 
         try {
-            const packed = packedRegex.exec(html)[1];
-            const unpacked = unpacker.unPack(packed);
+            if (html.includes("Size: ") && html.includes(' KB')) {
+                mp4 = null;
+            } else {
+                const packed = packedRegex.exec(html)[1];
+                const unpacked = unpacker.unPack(packed);
 
-            const sources = jsonRegex.exec(unpacked);
-            const stream = json5.parse(sources[1]);
-            if (stream)
-                mp4 = stream[0];
+                const sources = jsonRegex.exec(unpacked);
+                const stream = json5.parse(sources[1]);
+                if (stream)
+                    mp4 = stream[0];
+            }
+
         } catch (err) { }
 
         mp4 = mp4 == null ? '' : mp4;
