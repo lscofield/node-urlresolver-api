@@ -215,6 +215,13 @@ function powvideo($source)
                 }
             }
             $r = str_split(strrev($a145));
+
+            if(preg_match_all("/sqrt\(\/.*?:.*?\).*?\)/s", $rez, $m)){
+                for ($k = 0; $k < count($m[0]); $k++) {
+                    $orig = $m[0][$k];
+                    $rez = str_replace($orig, "sqrt(".explode("?",explode(":", $orig)[0])[2].")", $rez);
+                }
+            }
             eval($rez);
             $x    = implode($r);
             $link = str_replace($a145, $x, $link);
