@@ -6,7 +6,7 @@ function waaw($filelink)
     $pattern = "@(?:\/\/|\.)((?:waaw1?|netu|hqq|hindipix)\.(?:tv|watch|in))\/(?:watch_video\.php\?v|.+?vid)=([a-zA-Z0-9]+)@";
     if (preg_match($pattern, $filelink, $m)) {
         $vid = $m[2];
-        $l = "http://hqq.tv/player/get_md5.php?ver=0&secure=0&adb=0/&v=" . $vid . "&token=&gt=";
+        $l = "http://hqq.tv/player/get_md5.php?ver=0&secure=0&adb=0/&v=" . $vid . "&token=&gt=&wasmcheck=1";
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $l);
