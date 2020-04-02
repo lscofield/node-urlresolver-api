@@ -1,13 +1,13 @@
-/* gounlimited resolver
+/* vidtodo resolver
  * @lscofield
  * GNU
  */
-
+// Pendiente de probar
 const json5 = require('json5');
 const unpacker = require('../lib/unpacker');
 const skkchecker = require('../lib/skkchecker');
 const packedRegex = /(eval\(function\(p,a,c,k,e,d\){.*?}\(.*?\.split\('\|'\)\)\))/;
-const jsonRegex = /player.src\s*\(\s*(\[.*?\])\s*\)/gs;
+const jsonRegex = /sources:\s*(\[.*?\])/gs;
 
 exports.index = function (req, res) {
     //Optional check, only if you need to restrict access
@@ -28,17 +28,13 @@ exports.index = function (req, res) {
         var mp4 = '';
 
         try {
-            if (html.includes("Size: ") && html.includes(' KB')) {
-                mp4 = null;
-            } else {
-                const packed = packedRegex.exec(html)[1];
-                const unpacked = unpacker.unPack(packed);
+            const packed = packedRegex.exec(html)[1];
+            const unpacked = unpacker.unPack(packed);
 
-                const sources = jsonRegex.exec(unpacked);
-                const stream = json5.parse(sources[1]);
-                if (stream)
-                    mp4 = stream[0];
-            }
+            const sources = jsonRegex.exec(unpacked);
+            const stream = json5.parse(sources[1]);
+            if (stream)
+                mp4 = stream[0].src;
 
         } catch (err) { }
 

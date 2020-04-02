@@ -42,6 +42,7 @@ exports.index = function (req, res) {
                             json = json5.parse(json[1]);
 
                             mp4 = 'file' in json[0] ? json[0].file : json[0].src;
+                            mp4 = mp4.split("/hls/")[0] +"/"+ mp4.split(",")[1] + "/v.mp4";
 
                             break;
                         }
