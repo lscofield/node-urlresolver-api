@@ -120,7 +120,7 @@ function powvideo($source)
     include("jsabc.php");
     $jsu   = new JavaScriptUnpacker();
     $out   = $jsu->Unpack($h);
-    if (preg_match('/([http|https][\.\d\w\-\.\/\\\:\?\&\#\%\_]*(\.mp4))/', $out, $m)) {
+    if (preg_match('/([http|https][\.\d\w\-\.\/\\\:\?\&\#\%\_]*(\.mp4|\.m3u8))/', $out, $m)) {
         $link = $m[1];
         $t1   = explode("/", $link);
         $a145 = $t1[3];

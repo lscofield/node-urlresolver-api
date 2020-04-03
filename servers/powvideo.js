@@ -30,7 +30,7 @@ exports.index = function (req, res) {
                     if (error) {
                         mp4 = '';
                     } else {
-                        mp4 = result && (result.includes('v.mp4') || result.includes('master.m3u8')) ? result : '';
+                        mp4 = result && (result.includes('v.mp4') || result.includes('.m3u8')) ? result : '';
                     }
 
                     mp4 = mp4 == null ? '' : mp4;
