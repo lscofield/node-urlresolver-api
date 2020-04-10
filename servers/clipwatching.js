@@ -41,7 +41,7 @@ exports.index = function (req, res) {
                             var json = jsonRegex.exec(jwplayer);
                             json = json5.parse(json[1]);
 
-                            mp4 = 'file' in json[0] ? json[0].file : json[0].src;
+                            mp4 = json[0] ? json[0] : null;
 
                             break;
                         }
