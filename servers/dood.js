@@ -22,7 +22,7 @@ exports.index = function (req, res) {
         // autorized app block
         const source = 'source' in req.body ? req.body.source : req.query.source;
         const mode = 'mode' in req.body ? req.body.mode : req.query.mode;
-        const html = Buffer.from(source, 'base64').toString('utf8');
+        var html = Buffer.from(source, 'base64').toString('utf8');
         var mp4 = null;
 
         try {
@@ -32,9 +32,18 @@ exports.index = function (req, res) {
                 var match = mp4Regex.exec(html);
                 mp4 = match[1] && match[1] != '' ? match[1] : null;
             } else {
-                var token = 'token' in req.body ? req.body.token : 'token' in req.query ? req.query.token : "g603no0e44n4cg2469vebere";
+                var token = 'token' in req.body ? req.body.token : 'token' in req.query ? req.query.token : "";
                 token = token == '' ? "g603no0e44n4cg2469vebere" : token;
+                var token = 'token' in req.body ? req.body.token : 'token' in req.query ? req.query.token : "";
+                if (html != '') {
+                    mp4Regex = /<body>(.*?)<\/body>/gs;
+                    match = mp4Regex.exec(html);
+                    html = match[1] && match[1] != '' ? match[1] : "";
+                    html = html.trim();
+                }
+
                 //method with embed
+                var atob = require("atob");
                 var _0xc771 = ["\x31", "\x72\x65\x70\x6C\x61\x63\x65", "\x5A", "\x61"];
                 function openPlay(_0xa287x2) {
                     var _0xa287x3 = atob(_0xa287x2[_0xc771[1]](/\//g, _0xc771[0]));
@@ -51,11 +60,10 @@ exports.index = function (req, res) {
 
                 }
 
-                var dataRegex = /\/dood\?op=get_md5(.*?)[\'|\"]/gs;
-                var match = dataRegex.exec(html);
-                var data = match[1] && match[1] != '' ? match[1] : null;
-                if (data != null)
-                    mp4 = openPlay(data) + makePlay();
+                if (html != '')
+                    mp4 = openPlay(html) + makePlay();
+
+
             }
         } catch (e) {
             mp4 = null;
