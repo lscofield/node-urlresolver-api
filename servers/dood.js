@@ -33,8 +33,9 @@ exports.index = function (req, res) {
                 mp4 = match[1] && match[1] != '' ? match[1] : null;
             } else {
                 var token = 'token' in req.body ? req.body.token : 'token' in req.query ? req.query.token : "";
-                token = token == '' ? "g603no0e44n4cg2469vebere" : token;
-                var token = 'token' in req.body ? req.body.token : 'token' in req.query ? req.query.token : "";
+                token = token.split('/')[1].trim();
+                token = token && token != '' ? token : "g603no0e44n4cg2469vebere";
+
                 if (html != '') {
                     mp4Regex = /<body>(.*?)<\/body>/gs;
                     match = mp4Regex.exec(html);
