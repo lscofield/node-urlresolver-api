@@ -24,35 +24,42 @@ exports.index = function (req, res) {
         const mode = 'mode' in req.body ? req.body.mode : req.query.mode;
         const html = Buffer.from(source, 'base64').toString('utf8');
         var mp4 = null;
-        var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-        if (mode == 'remote') {
-            fetch(html, {
-                headers: {
-                    "REMOTE_ADDR": ip,
-                    "HTTP_X_FORWARDED_FOR": ip,
-                    "X-Forwarded-For": ip,
-                    "HTTP_X_REAL_IP": ip,
-                    "X-Real-IP": ip
-                }
-            }).then(res => res.text())
-                .then(body => {
-                    if (body) {
-                        var mp4Regex = /source\s*src=[\"|\'](.*?)[\"|\']/gs;
-                        var match = mp4Regex.exec(body);
-                        mp4 = match[1] && match[1] != '' ? match[1] : "";
 
-                        mp4 = mp4 == null ? '' : mp4;
-                        res.json({ status: mp4 == '' ? 'error' : 'ok', url: mp4 });
-                    } else {
-                        res.json({ status: 'error', url: '' });
+        if (mode == 'remote') {
+            try {
+                var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+                ip = ip && ip.includes(',') ? ip.split(",")[0].trim() : ip;
+                fetch(html, {
+                    headers: {
+                        "REMOTE_ADDR": ip,
+                        "HTTP_X_FORWARDED_FOR": ip,
+                        "X-Forwarded-For": ip,
+                        "HTTP_X_REAL_IP": ip,
+                        "X-Real-IP": ip
                     }
-                }).catch(err => {
-                    res.json({ status: 'error', url: '' });
-                });
+                }).then(res => res.text())
+                    .then(body => {
+                        if (body) {
+                            var mp4Regex = /source\s*src=[\"|\'](.*?)[\"|\']/gs;
+                            var match = mp4Regex.exec(body);
+                            mp4 = match[1] && match[1] != '' ? match[1] : "";
+
+                            mp4 = mp4 == null ? '' : mp4;
+                            res.json({ status: mp4 == '' ? 'error' : 'ok', url: mp4 });
+                        } else {
+                            res.json({ status: 'error', url: '' });
+                        }
+                    }).catch(err => {
+                        res.json({ status: 'error', url: '' });
+                    });
+            } catch (er) {
+                res.json({ status: 'error', url: '' });
+            }
+
         } else {
             try {
-                var mp4Regex = /source\s*src=[\"|\'](.*?)[\"|\']/gs;
-                var match = mp4Regex.exec(body);
+                var mp4Regex = /source\s*src=["|'](.*?)["|']/gs;
+                var match = mp4Regex.exec(html);
                 mp4 = match[1] && match[1] != '' ? match[1] : "";
             } catch (e) {
                 mp4 = null;
