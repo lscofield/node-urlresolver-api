@@ -16,6 +16,11 @@
         "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4"
     ],
     "servers": [
+        "streamtape",
+        "upstream",
+        "uptostream",
+        "dood",
+        "mediafire",
         "cloudvideo",
         "onlystream",
         "clipwatching",
