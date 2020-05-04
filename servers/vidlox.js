@@ -51,10 +51,6 @@ exports.index = function (req, res) {
                     }
                 } catch (rt) { }
             }
-
-            if (mp4 == null || !mp4.includes(".mp4")) {
-                mp4 = null;
-            }
         } catch (e) {
             mp4 = mp4 == null || mp4 == '' ? '' : mp4;
         }
