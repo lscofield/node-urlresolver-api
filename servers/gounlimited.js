@@ -38,6 +38,9 @@ exports.index = function (req, res) {
                 const stream = json5.parse(sources[1]);
                 if (stream)
                     mp4 = stream[0];
+
+                if (mp4 != null && mp4 != '' && mp4.endsWith('small3.mp4'))
+                    mp4 = null;
             }
 
         } catch (err) { }
