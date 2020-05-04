@@ -30,6 +30,7 @@ exports.index = function (req, res) {
         try {
             mp4 = $('#videolink').html();
             mp4 = "https:" + mp4.trim();
+            mp4 = mp4.split('&amp;').join('&');
         } catch (e) {
             mp4 = null;
         }
