@@ -32,13 +32,14 @@ exports.index = function (req, res) {
     code = code.replace("\\/=+$\\/", "/=+$/");
     code = code.split("window").join("this");
     var regexReturn = /return\n/g;
-	code = code.replace(regexReturn, "return ");
+    code = code.replace(regexReturn, "return ");
     eval(code);
 
-    if (sources && sources.length > 0) {
-      mp4 = sources[0].src;
+    try {
+      if (sources && sources.length > 0)
+        mp4 = sources[0].src;
+    } catch (errr) {
     }
-
     mp4 = mp4 == null ? "" : mp4;
 
     res.json({ status: mp4 == "" ? "error" : "ok", url: mp4 });
