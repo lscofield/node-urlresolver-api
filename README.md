@@ -45,6 +45,8 @@ $ pm2 stop 0
   - Extraction mode: remote
   - Source: video_url
 ```sh
+// Example video
+String video_url = "https://www.bitporno.com/v/GE9XI6GIQW";
 String mp4 = null;
 String authJSON = "{\"auth\":\"\",\"skk\":\"your_app_key_from_config_file\"}";
 String apiurl = "http://yourdomain_or_ip_address/api/v1/bitporno";
@@ -75,12 +77,14 @@ if(obj != null && obj.contains("url")){
   - Extraction mode: local
   - Source: video_url page (html source code)
 ```sh
+// Example video
+String video_url = "https://www.bitporno.com/v/GE9XI6GIQW";
 String mp4 = null;
 String authJSON = "{\"auth\":\"\",\"skk\":\"your_app_key_from_config_file\"}";
 String apiurl = "http://yourdomain_or_ip_address/api/v1/bitporno";
 
 // Getting video_url source code
-Document document = Jsoup.connect(l)
+Document document = Jsoup.connect(video_url)
            .timeout(TIMEOUT_HERE)
            .userAgent("Mozilla")
            .parser(Parser.htmlParser()).get();
