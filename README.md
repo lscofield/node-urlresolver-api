@@ -42,7 +42,6 @@ $ pm2 stop 0
 ### Usage (Not completed yet)
 > NOTE: You can use any programing language to extract direct url, I use Java (Android)
 - Bitporno
-  - Language: Java (Android)
   - Extraction mode: remote
   - Source: video_url
 ```sh
@@ -74,7 +73,6 @@ if(obj != null && obj.contains("url")){
 }
 ```
 - Bitporno
-  - Language: Java (Android)
   - Extraction mode: local
   - Source: video_url page (html source code)
 ```sh
@@ -112,7 +110,6 @@ if(obj != null && obj.contains("url")){
 }
 ```
 - Uptostream
-  - Language: Java (Android)
   - Extraction mode: local
   - Source: video_url page (html source code)
 ```sh
