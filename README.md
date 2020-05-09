@@ -63,6 +63,6 @@ if(obj != null && obj.contains("url")){
     // Finally mp4 contains some of these values
     // is null ==> Connection error
     // is empty ==> no link fetched or apiserver error or video go down
-    // direct video url (.mp4) and you and play it directly in any video player
+    // direct video url (.mp4) and you can play it directly in any video player
 }
 ```
