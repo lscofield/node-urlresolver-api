@@ -17,17 +17,30 @@ Next, install all dependencies with npm command
 
 
 ### Install dependencies
-- All you need to do is clone the project with git clone <repo>  
+- All you need to do is clone the project with git clone
 - navigate to de project folder and run this command: npm install  
 - these command will be install all required dependencies from package.json
+```sh
+$ git clone https://github.com/lscofield/node-urlresolver-api
+$ cd node-urlresolver-api
+$ npm install
+```
+
 ### Running the App
 - Now you can start the app running the command: node app.js
 - Or you can install pm2 (production mode) with: npm install -g pm2 
 - And start the app running: pm2 start app.js
+- To stop pm2 app you can run: pm2 stop {app_id|all}
+```sh
+$ node app.js
+$ npm install -g pm2
+$ pm2 start app.js
+$ pm2 stop 0
+```
 
 
 ### Usage (Not completed yet)
-### Only with video url servers
+    - Only with video url servers
 - Bitporno: Usage (Language: Java)
 ```sh
 String mp4 = null;
