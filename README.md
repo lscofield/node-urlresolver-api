@@ -115,8 +115,8 @@ if(obj != null && obj.contains("url")){
 ```sh
 // Example video
 String video_url = "https://uptostream.com/qiwfyxphnres";
-String file = video_url.split("/")[3];
-String uptostreamAPI = "https://uptostream.com/api/streaming/source/get?token=null&file_code="+file;
+String video_id = video_url.split("/")[3];
+String uptostreamAPI = "https://uptostream.com/api/streaming/source/get?token=null&file_code="+video_id;
 String mp4 = null;
 String authJSON = "{\"auth\":\"\",\"skk\":\"your_app_key_from_config_file\"}";
 String apiurl = "http://yourdomain_or_ip_address/api/v1/uptostream";
