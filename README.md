@@ -40,6 +40,7 @@ $ pm2 stop 0
 
 
 ### Usage (Not completed yet)
+> NOTE: You can use any programing language to extract direct url, I use Java (Android)
 - Bitporno
   - Language: Java (Android)
   - Extraction mode: remote
@@ -69,7 +70,7 @@ if(obj != null && obj.contains("url")){
     // Finally mp4 contains some of these values
     // is null ==> Connection error
     // is empty ==> no link fetched or apiserver error or video go down
-    // is direct video url (.mp4) and you can play it directly in any video player
+    // is direct video url (.mp4 or .m3u8) and you can play it directly in any video player
 }
 ```
 - Bitporno
@@ -107,6 +108,47 @@ if(obj != null && obj.contains("url")){
     // Finally mp4 contains some of these values
     // is null ==> Connection error
     // is empty ==> no link fetched or apiserver error or video go down
-    // is direct video url (.mp4) and you can play it directly in any video player
+    // is direct video url (.mp4 or .m3u8) and you can play it directly in any video player
+}
+```
+- Uptostream
+  - Language: Java (Android)
+  - Extraction mode: local
+  - Source: video_url page (html source code)
+```sh
+// Example video
+String video_url = "https://uptostream.com/qiwfyxphnres";
+String file = video_url.split("/")[3];
+String uptostreamAPI = "https://uptostream.com/api/streaming/source/get?token=null&file_code="+file;
+String mp4 = null;
+String authJSON = "{\"auth\":\"\",\"skk\":\"your_app_key_from_config_file\"}";
+String apiurl = "http://yourdomain_or_ip_address/api/v1/uptostream";
+
+// Getting video_url source code
+Document document = Jsoup.connect(uptostreamAPI)
+           .timeout(TIMEOUT_HERE)
+           .referrer(video_url)
+           .userAgent("Mozilla")
+           .parser(Parser.htmlParser()).get();
+
+// Getting direct url through api         
+String obj = Jsoup.connect(apiurl)
+            .timeout(TIMEOUT_HERE)
+            .data("source", encodeBase64(document.toString()))
+            .data("auth", encodeBase64(authJSON))
+            .data("mode", "local")
+            .method(Connection.Method.POST)
+            .ignoreContentType(true)
+            .execute().body();
+
+if(obj != null && obj.contains("url")){
+    JSONObject json = new JSONObject(obj);
+
+    if (json.getString("status").equals("ok"))
+        mp4 = json.getString("url");
+    // Finally mp4 contains some of these values
+    // is null ==> Connection error
+    // is empty ==> no link fetched or apiserver error or video go down
+    // is direct video url (.mp4 or .m3u8) and you can play it directly in any video player
 }
 ```
