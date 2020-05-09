@@ -41,6 +41,74 @@ $ pm2 stop 0
 
 ### Usage (Not completed yet)
 > NOTE: You can use any programing language to extract direct url, I use Java (Android)
+- Bitporno
+  - Extraction mode: remote
+  - Source: video_url
+```sh
+// Example video
+String video_url = "https://www.bitporno.com/v/GE9XI6GIQW";
+String mp4 = null;
+String authJSON = "{\"auth\":\"\",\"skk\":\"your_app_key_from_config_file\"}";
+String apiurl = "http://yourdomain_or_ip_address/api/v1/bitporno";
+
+// Getting direct url through api    
+String obj = Jsoup.connect(apiurl)
+            .timeout(TIMEOUT_HERE)
+            .data("source", encodeBase64(video_url))
+            .data("auth", encodeBase64(authJSON))
+            .data("mode", "remote")
+            .method(Connection.Method.POST)
+            .ignoreContentType(true)
+            .execute().body();
+
+if(obj != null && obj.contains("url")){
+    JSONObject json = new JSONObject(obj);
+
+    if (json.getString("status").equals("ok"))
+        mp4 = json.getString("url");
+    // Finally mp4 contains some of these values
+    // is null ==> Connection error
+    // is empty ==> no link fetched or apiserver error or video go down
+    // is direct video url (.mp4 or .m3u8) and you can play it directly in any video player
+}
+```
+- Bitporno
+  - Extraction mode: local
+  - Source: video page source code
+```sh
+// Example video
+String video_url = "https://www.bitporno.com/v/GE9XI6GIQW";
+String mp4 = null;
+String authJSON = "{\"auth\":\"\",\"skk\":\"your_app_key_from_config_file\"}";
+String apiurl = "http://yourdomain_or_ip_address/api/v1/bitporno";
+
+// Getting video page source code
+Document document = Jsoup.connect(video_url)
+           .timeout(TIMEOUT_HERE)
+           .userAgent("Mozilla")
+           .parser(Parser.htmlParser()).get();
+
+// Getting direct url through api         
+String obj = Jsoup.connect(apiurl)
+            .timeout(TIMEOUT_HERE)
+            .data("source", encodeBase64(document.toString()))
+            .data("auth", encodeBase64(authJSON))
+            .data("mode", "local")
+            .method(Connection.Method.POST)
+            .ignoreContentType(true)
+            .execute().body();
+
+if(obj != null && obj.contains("url")){
+    JSONObject json = new JSONObject(obj);
+
+    if (json.getString("status").equals("ok"))
+        mp4 = json.getString("url");
+    // Finally mp4 contains some of these values
+    // is null ==> Connection error
+    // is empty ==> no link fetched or apiserver error or video go down
+    // is direct video url (.mp4 or .m3u8) and you can play it directly in any video player
+}
+```
 - Supervideo
   - Extraction mode: remote
   - Source: video_url
@@ -109,46 +177,6 @@ if(obj != null && obj.contains("url")){
     // is direct video url (.mp4 or .m3u8) and you can play it directly in any video player
 }
 ```
-- Uptostream
-  - Extraction mode: local
-  - Source: video page source code
-```sh
-// Example video
-String video_url = "https://uptostream.com/qiwfyxphnres";
-String video_id = video_url.split("/")[3];
-String uptostreamAPI = "https://uptostream.com/api/streaming/source/get?token=null&file_code="+video_id;
-String mp4 = null;
-String authJSON = "{\"auth\":\"\",\"skk\":\"your_app_key_from_config_file\"}";
-String apiurl = "http://yourdomain_or_ip_address/api/v1/uptostream";
-
-// Getting video page source code
-Document document = Jsoup.connect(uptostreamAPI)
-           .timeout(TIMEOUT_HERE)
-           .referrer(video_url)
-           .userAgent("Mozilla")
-           .parser(Parser.htmlParser()).get();
-
-// Getting direct url through api         
-String obj = Jsoup.connect(apiurl)
-            .timeout(TIMEOUT_HERE)
-            .data("source", encodeBase64(document.toString()))
-            .data("auth", encodeBase64(authJSON))
-            .data("mode", "local")
-            .method(Connection.Method.POST)
-            .ignoreContentType(true)
-            .execute().body();
-
-if(obj != null && obj.contains("url")){
-    JSONObject json = new JSONObject(obj);
-
-    if (json.getString("status").equals("ok"))
-        mp4 = json.getString("url");
-    // Finally mp4 contains some of these values
-    // is null ==> Connection error
-    // is empty ==> no link fetched or apiserver error or video go down
-    // is direct video url (.mp4 or .m3u8) and you can play it directly in any video player
-}
-```
 - Upstream
   - Extraction mode: local
   - Source: video page source code
@@ -186,50 +214,22 @@ if(obj != null && obj.contains("url")){
     // is direct video url (.mp4 or .m3u8) and you can play it directly in any video player
 }
 ```
-- Bitporno
-  - Extraction mode: remote
-  - Source: video_url
-```sh
-// Example video
-String video_url = "https://www.bitporno.com/v/GE9XI6GIQW";
-String mp4 = null;
-String authJSON = "{\"auth\":\"\",\"skk\":\"your_app_key_from_config_file\"}";
-String apiurl = "http://yourdomain_or_ip_address/api/v1/bitporno";
-
-// Getting direct url through api    
-String obj = Jsoup.connect(apiurl)
-            .timeout(TIMEOUT_HERE)
-            .data("source", encodeBase64(video_url))
-            .data("auth", encodeBase64(authJSON))
-            .data("mode", "remote")
-            .method(Connection.Method.POST)
-            .ignoreContentType(true)
-            .execute().body();
-
-if(obj != null && obj.contains("url")){
-    JSONObject json = new JSONObject(obj);
-
-    if (json.getString("status").equals("ok"))
-        mp4 = json.getString("url");
-    // Finally mp4 contains some of these values
-    // is null ==> Connection error
-    // is empty ==> no link fetched or apiserver error or video go down
-    // is direct video url (.mp4 or .m3u8) and you can play it directly in any video player
-}
-```
-- Bitporno
+- Uptostream
   - Extraction mode: local
   - Source: video page source code
 ```sh
 // Example video
-String video_url = "https://www.bitporno.com/v/GE9XI6GIQW";
+String video_url = "https://uptostream.com/qiwfyxphnres";
+String video_id = video_url.split("/")[3];
+String uptostreamAPI = "https://uptostream.com/api/streaming/source/get?token=null&file_code="+video_id;
 String mp4 = null;
 String authJSON = "{\"auth\":\"\",\"skk\":\"your_app_key_from_config_file\"}";
-String apiurl = "http://yourdomain_or_ip_address/api/v1/bitporno";
+String apiurl = "http://yourdomain_or_ip_address/api/v1/uptostream";
 
 // Getting video page source code
-Document document = Jsoup.connect(video_url)
+Document document = Jsoup.connect(uptostreamAPI)
            .timeout(TIMEOUT_HERE)
+           .referrer(video_url)
            .userAgent("Mozilla")
            .parser(Parser.htmlParser()).get();
 
