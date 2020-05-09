@@ -149,7 +149,6 @@ if(obj != null && obj.contains("url")){
     // is direct video url (.mp4 or .m3u8) and you can play it directly in any video player
 }
 ```
-```
 - Upstream
   - Extraction mode: local
   - Source: video page source code
