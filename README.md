@@ -1,4 +1,4 @@
-------------------------------------- Forgive my english I am spanish. Thanks -------------------------------
+------------------------------------- Forgive my english I'm still learning. Thanks -------------------------------
 # node-urlresolver-api
 > A complete nodejs API to extract streaming sites video direct URLs:
 > For the supported servers go to /servers.
