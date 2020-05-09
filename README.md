@@ -40,7 +40,7 @@ $ pm2 stop 0
 
 
 ### Usage (Not completed yet)
-    - Only with video url servers
+    - Can extract with video url servers
 - Bitporno: Usage (Language: Java)
 ```sh
 String mp4 = null;
