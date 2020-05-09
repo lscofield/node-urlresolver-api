@@ -1,19 +1,14 @@
+------------------------------------- Forgive my english I am spanish. Thanks -------------------------------
 # node-urlresolver-api
-### A complete nodejs API to extract streaming sites video direct URLs:
-### For the supported servers go to /servers.
-  
-### Required dependencies:  
-    - body-parser  
-    - cheerio   
-    - express   
-    - got  
-    - exec-php (optional)  
-    - json5  
-  
+> A complete nodejs API to extract streaming sites video direct URLs:
+> For the supported servers go to /servers.
 
+### Requirements
+- A VPS server or dedicated Server, or a server with install privileges
+- (Optional) point your server IP address in a domain name to pretty API url
 ### Installation  
-To install this API in your server you only need to
- have nodejs 10.x+ installed.  
+To install this API on your server you only need to
+have nodejs 10.x+ installed.  
 Next, install all dependencies with npm command  
 
 
@@ -22,9 +17,39 @@ Next, install all dependencies with npm command
 
 
 ### Install dependencies
-    - All you need to do is clone the project with git clone <repo>  
-    - navigate to de project folder and run this command: npm install  
-    - Now you can start the app running the command: node app.js or pm2 
+- All you need to do is clone the project with git clone <repo>  
+- navigate to de project folder and run this command: npm install  
+- these command will be install all required dependencies from package.json
+### Running the App
+- Now you can start the app running the command: node app.js
+- Or you can install pm2 (production mode) with: npm install -g pm2 
+- And start the app running: pm2 start app.js
 
 
-### Usage (Pending)
+### Usage (Not completed yet)
+### Only with video url servers
+- Bitporno: Usage (Language: Java)
+```sh
+String mp4 = null;
+String authJSON = "{\"auth\":\"\",\"skk\":\"your_app_key_from_config_file\"}";
+String apiurl = "http://yourdomain_or_ip_address/api/v1/bitporno";
+String obj = Jsoup.connect(apiurl)
+            .timeout(TIMEOUT_HERE)
+            .data("source", encodeBase64(video_url))
+            .data("auth", encodeBase64(authJSON))
+            .data("mode", "remote")
+            .method(Connection.Method.POST)
+            .ignoreContentType(true)
+            .execute().body();
+
+if(obj != null && obj.contains("url")){
+    JSONObject json = new JSONObject(obj);
+
+    if (json.getString("status").equals("ok"))
+        mp4 = json.getString("url");
+    // Finally mp4 contains some of these values
+    // is null ==> Connection error
+    // is empty ==> no link fetched or apiserver error or video go down
+    // direct video url (.mp4) and you and play it directly in any video player
+}
+```
