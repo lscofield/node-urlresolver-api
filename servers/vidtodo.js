@@ -34,7 +34,7 @@ exports.index = function (req, res) {
             const sources = jsonRegex.exec(unpacked);
             const stream = json5.parse(sources[1]);
             if (stream)
-                mp4 = stream[0].src;
+                mp4 = stream[0].file;
 
         } catch (err) { }
 
