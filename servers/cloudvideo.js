@@ -2,9 +2,11 @@
  * @lscofield
  * GNU
  */
-
-const cheerio = require('cheerio');
+const json5 = require('json5');
+const unpacker = require('../lib/unpacker');
 const skkchecker = require('../lib/skkchecker');
+const packedRegex = /(eval\(function\(p,a,c,k,e,d\){.*?}\(.*?\.split\('\|'\)\)\))/;
+const jsonRegex = /sources\s*:\s*\[(.*?)\]/gs;
 
 exports.index = function (req, res) {
     //Optional check, only if you need to restrict access
@@ -29,25 +31,20 @@ exports.index = function (req, res) {
         if (mode == 'remote') {
             res.json({ status: 'error', url: '' });
         } else {
-            const $ = cheerio.load(html);
 
             try {
-                mp4 = $('#vjsplayer').children().first().attr('src');
+                const packed = packedRegex.exec(html)[1];
+                const unpacked = unpacker.unPack(packed);
 
-                if (mp4 == null || (!mp4.includes("v.mp4") && !mp4.includes(".m3u8"))) {
-                    mp4 = null;
+                const sources = jsonRegex.exec(unpacked);
+                const stream = json5.parse('[' + sources[1] + ']');
+                if (stream) {
+                    mp4 = stream[0].src;
+                    mp4 = mp4.split(',').join('');
+                    mp4 = mp4.replace('.urlset/master.m3u8', '/v.mp4');
+                    mp4 = mp4.replace('/hls/', '/');
                 }
-                if (mp4 != null && mp4.includes(".m3u8")) {
-                    var parts = mp4.split(',');
-                    mp4 = '';
-                    for (var i = 0; i < parts.length - 1; i++) {
-                        mp4 += parts[i];
-                    }
-                    mp4 = mp4.replace('hls/', '') + '/v.mp4';
-                }
-            } catch (e) {
-                mp4 = null;
-            }
+            } catch (err) { }
 
             mp4 = mp4 == null ? '' : mp4;
 
