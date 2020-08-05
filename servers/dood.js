@@ -44,14 +44,14 @@ exports.index = function (req, res) {
                 }
 
                 //method with embed
-                var atob = require("atob");
+                /*var atob = require("atob");
                 var _0xc771 = ["\x31", "\x72\x65\x70\x6C\x61\x63\x65", "\x5A", "\x61"];
                 function openPlay(_0xa287x2) {
                     var _0xa287x3 = atob(_0xa287x2[_0xc771[1]](/\//g, _0xc771[0]));
                     _0xa287x3 = atob(_0xa287x3[_0xc771[1]](/\//g, _0xc771[2]));
                     _0xa287x3 = atob(_0xa287x3[_0xc771[1]](/@/g, _0xc771[3]));
                     return _0xa287x3
-                }
+                }*/
 
                 function makePlay() {
                     for (var a = "", t = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", n = t.length, o = 0; 10 > o; o++)
@@ -62,7 +62,7 @@ exports.index = function (req, res) {
                 }
 
                 if (html != '')
-                    mp4 = openPlay(html) + makePlay();
+                    mp4 = /*openPlay(*/html/*)*/ + makePlay();
 
 
             }
