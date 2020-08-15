@@ -1,3 +1,12 @@
+Here is an Android Simple APP make with java to see the power of the API
+App integrated with:
+-  A video player (exoplayer based)
+- A download manager with pause/resume support
+
+- Here is the apk file [download link]https://mega.nz/file/P5QSzApD#IM6JVCkgrZcfK7tRbatOqucIJWFNO0OMzYILgxqD0G8
+- Here is the repository contains [code of the App]https://github.com/lscofield/url-resolver-simple-android-app
+
+
 ------------------------------------- Forgive my english I'm still learning. Thanks -------------------------------
 # node-urlresolver-api
 > A complete nodejs API to extract streaming sites video direct URLs:
