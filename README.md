@@ -1,4 +1,4 @@
-Here is an Android Simple APP make with java to see the power of the API
+Here is an Android Simple APP make with java to see the power of node-urlresolver-api
 
 App integrated with:
 - A video player (exoplayer based)
