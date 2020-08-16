@@ -1,10 +1,16 @@
 Here is an Android Simple APP make with java to see the power of the API
-App integrated with:
--  A video player (exoplayer based)
-- A download manager with pause/resume support
 
-- Here is the apk file [download link]https://mega.nz/file/P5QSzApD#IM6JVCkgrZcfK7tRbatOqucIJWFNO0OMzYILgxqD0G8
-- Here is the repository contains [code of the App]https://github.com/lscofield/url-resolver-simple-android-app
+App integrated with:
+- A video player (exoplayer based)
+    - Pinch zoom in/out support
+    - Play local files support
+    - Play hls.m3u8 support
+    - Open from intent like standard video player
+- Google Admob integrated
+- A download manager with pause/resume/delete/open support
+
+- Here is the apk file [download link](http://www.mediafire.com/folder/ur0h8u9t90enu/nide-url-resolver)
+- Here is the repository contains [code of the App](https://github.com/lscofield/url-resolver-android-simple)
 
 
 ------------------------------------- Forgive my english I'm still learning. Thanks -------------------------------
