@@ -5,6 +5,8 @@
 
 const json5 = require('json5');
 const skkchecker = require('../lib/skkchecker');
+const unpacker = require('../lib/unpacker');
+const packedRegex = /(eval\(function\(p,a,c,k,e,d\){.*?}\(.*?\.split\('\|'\)\)\))/;
 
 exports.index = function (req, res) {
     //Optional check, only if you need to restrict access
@@ -22,10 +24,12 @@ exports.index = function (req, res) {
     } else {
         // autorized app block
         const source = 'source' in req.body ? req.body.source : req.query.source;
-        const html = Buffer.from(source, 'base64').toString('utf8');
+        var html = Buffer.from(source, 'base64').toString('utf8');
         var mp4 = null;
 
         try {
+            const packed = packedRegex.exec(html)[1];
+            html = unpacker.unPack(packed);
             const jsonRegex = /sources\s*:\s*(\[.*?\])/gs;
             var json = jsonRegex.exec(html);
             json = json5.parse(json[1]);
