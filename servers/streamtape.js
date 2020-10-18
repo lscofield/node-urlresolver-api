@@ -31,7 +31,7 @@ exports.index = function (req, res) {
 
             if (mp4 && mp4 != '' && !mp4.includes('http'))
                 mp4 = "https:" + mp4;
-            mp4 = mp4 + "&stream=1";
+            mp4 = mp4 && mp4 != '' ? mp4 + "&stream=1" : null;
         } catch (e) {
             mp4 = null;
         }
