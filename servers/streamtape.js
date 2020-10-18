@@ -3,7 +3,6 @@
  * GNU
  */
 
-const cheerio = require('cheerio');
 const skkchecker = require('../lib/skkchecker');
 
 exports.index = function (req, res) {
@@ -25,12 +24,14 @@ exports.index = function (req, res) {
         const html = Buffer.from(source, 'base64').toString('utf8');
         var mp4 = null;
 
-        const $ = cheerio.load(html);
-
         try {
-            mp4 = $('#videolink').html();
-            mp4 = "https:" + mp4.trim();
-            mp4 = mp4.split('&amp;').join('&');
+            var mp4Regex = /document\.getElementById\(\"videolink\"\)\.innerHTML\s*=\s*\"(.*?)\"/gs;
+            var match = mp4Regex.exec(html);
+            mp4 = match[1];
+
+            if (mp4 && mp4 != '' && !mp4.includes('http'))
+                mp4 = "https:" + mp4;
+            mp4 = mp4 + "&stream=1";
         } catch (e) {
             mp4 = null;
         }
