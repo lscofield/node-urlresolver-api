@@ -43,8 +43,8 @@ exports.index = function (req, res) {
                 }
 
                 if (mp4.endsWith("master.m3u8")) {
-                    mp4 = str_replace("hls/,", "", mp4);
-                    mp4 = str_replace(",.urlset/master.m3u8", "/v.mp4", mp4);
+                    mp4 = mp4.replace("hls/", "");
+                    mp4 = mp4.replace(",.urlset/master.m3u8", "/v.mp4");
                 }
             } catch (err) {
                 mp4 = '';
