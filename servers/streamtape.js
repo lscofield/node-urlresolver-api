@@ -25,7 +25,7 @@ exports.index = function (req, res) {
         var mp4 = null;
 
         try {
-            var mp4Regex = /document\.getElementById\(\"videolink\"\)\.innerHTML\s*=\s*\"(.*?)\"/gs;
+            var mp4Regex = /document\.getElementById\(\'videolink\'\);\s*elem\s*\[\'innerHTML\'\]\s*=\s*\'(.*?)\'/gs;
             var match = mp4Regex.exec(html);
             mp4 = match[1];
 
