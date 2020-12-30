@@ -1,8 +1,9 @@
-/* streamtape resolver
+/* mystream resolver
  * @lscofield
  * GNU
  */
 
+const execPhp = require('exec-php');
 const skkchecker = require('../lib/skkchecker');
 
 exports.index = function (req, res) {
@@ -20,24 +21,25 @@ exports.index = function (req, res) {
         res.json({ status: 'ok', url: granted });
     } else {
         // autorized app block
-        const source = 'source' in req.body ? req.body.source : req.query.source;
-        const html = Buffer.from(source, 'base64').toString('utf8');
+        var source = 'source' in req.body ? req.body.source : req.query.source;
         var mp4 = null;
 
         try {
-            var mp4Regex = /document\.getElementById\(\"videolink\"\)\.innerHTML\s*=\s*\"(.*?)\"/gs;
-            var match = mp4Regex.exec(html);
-            mp4 = match[1];
+            execPhp('../lib/mystream.php', '/usr/bin/php', function (error, php, output) {
+                php.mystream(source, function (error, result, output, printed) {
+                    if (error) {
+                        mp4 = '';
+                    } else {
+                        mp4 = result && (result.includes('.mp4') || result.includes('.m3u8')) ? result : '';
+                    }
 
-            if (mp4 && mp4 != '' && !mp4.includes('http'))
-                mp4 = "https:" + mp4;
-            mp4 = mp4 && mp4 != '' ? mp4 + "&stream=1" : null;
+                    mp4 = mp4 == null ? '' : mp4;
+
+                    res.json({ status: mp4 == '' ? 'error' : 'ok', url: mp4 });
+                });
+            });
         } catch (e) {
-            mp4 = null;
+            res.json({ status: 'error', url: '' });
         }
-
-        mp4 = mp4 == null ? '' : mp4;
-
-        res.json({ status: mp4 == '' ? 'error' : 'ok', url: mp4 });
     }
 };
