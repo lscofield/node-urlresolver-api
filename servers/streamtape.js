@@ -25,13 +25,15 @@ exports.index = function (req, res) {
         var mp4 = null;
 
         try {
-            var mp4Regex = /document\.getElementById\(\"videolink\"\)\.innerHTML\s*=\s*\"(.*?)\"/gs;
+            var mp4Regex = /link'\)\.innerHTML\s*=\s*\"(.*?);/gs;
             var match = mp4Regex.exec(html);
-            mp4 = match[1];
-
-            if (mp4 && mp4 != '' && !mp4.includes('http'))
-                mp4 = "https:" + mp4;
-            mp4 = mp4 && mp4 != '' ? mp4 + "&stream=1" : null;
+            var mm = match[1];
+            if (mm && mm != '') {
+                mp4 = eval('"' + mm);
+                if (mp4 && mp4 != '' && !mp4.includes('http'))
+                    mp4 = "https:" + mp4;
+                mp4 = mp4 && mp4 != '' ? mp4 + "&stream=1" : null;
+            }
         } catch (e) {
             mp4 = null;
         }
