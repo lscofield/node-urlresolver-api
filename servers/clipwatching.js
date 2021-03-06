@@ -36,7 +36,7 @@ exports.index = function (req, res) {
                 var json = jsonRegex.exec(html);
                 json = json5.parse(json[1]);
 
-                mp4 = json[0] ? 'src' in json[0] ? json[0].src : json[0] : null;
+                mp4 = json[0] ? 'file' in json[0] ? json[0].file : json[0] : null;
                 // try {
                 //  if (req.get('user-agent').includes('axios'))
                 mp4 = mp4 && mp4.endsWith('master.m3u8') ? mp4.replace('/hls/', '/').split(',').join('').replace('.urlset/master.m3u8', '/v.mp4') : mp4;
