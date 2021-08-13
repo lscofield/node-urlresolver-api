@@ -58,12 +58,10 @@ exports.index = function (req, res) {
                         a += t.charAt(Math.floor(Math.random() * n));
 
                     return a + "?token=" + token + "&expiry=" + Date.now();
-
                 }
 
                 if (html != '')
                     mp4 = /*openPlay(*/html/*)*/ + makePlay();
-
 
             }
         } catch (e) {
