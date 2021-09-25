@@ -3,7 +3,7 @@
  * GNU
  */
 
-const skkchecker = require('../lib/skkchecker');
+const skkchecker = require('../lib/skkchecker')
 
 exports.index = function (req, res) {
     //Optional check, only if you need to restrict access
@@ -25,21 +25,40 @@ exports.index = function (req, res) {
         var mp4 = null;
 
         try {
-            var mp4Regex = /link'\)\.innerHTML\s*=\s*\"(.*?);/gs;
-            var match = mp4Regex.exec(html);
-            var mm = match[1];
-            if (mm && mm != '') {
-                mp4 = eval('"' + mm);
-                if (mp4 && mp4 != '' && !mp4.includes('http'))
-                    mp4 = "https:" + mp4;
-                mp4 = mp4 && mp4 != '' ? mp4 + "&stream=1" : null;
+            const regexp = /\(\'\w+\'\)\.innerHTML\s*\=\s*(.*?)\;/g
+            const matches = html.matchAll(regexp)
+
+            var _matches = []
+            for (const _match of matches)
+                _matches.push(_match[1])
+
+            var divc = _matches[_matches.length - 1]
+
+            divc = divc.split("'").join('"')
+            var inner = divc.split("+")
+            var result = ''
+
+            for (var i = 0; i < inner.length; i++) {
+                var sline = inner[i].trim()
+                var mp4Regex = /\(?\"([^\"]+)\"\)?(\.substring\((\d+)\))?(\.substring\((\d+)\))?/
+                var match = mp4Regex.exec(sline)
+                if (match)
+                    if (match.length > 5 && match[3] && match[5])
+                        result += (match[1].substr(match[3])).substr(match[5])
+                    else if (match[3])
+                        result += match[1].substr(match[3])
+                    else result += match[1]
             }
+
+            mp4 = result
+            mp4 += "&stream=1"
+            if (mp4[0] === "/") mp4 = "https:/" + mp4
         } catch (e) {
             mp4 = null;
         }
 
         mp4 = mp4 == null ? '' : mp4;
 
-        res.json({ status: mp4 == '' ? 'error' : 'ok', url: mp4 });
+        res.json({ status: mp4 == '' ? 'error' : 'ok', url: mp4 })
     }
 };
