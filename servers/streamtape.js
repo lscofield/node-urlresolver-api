@@ -35,7 +35,8 @@ exports.index = function (req, res) {
             var t5 = t4.split("'")[1]
             t3 = t5.split('?')[1]
 
-            mp4 = 'https://streamtape.com/get_video?' + t3
+            if (t3)
+                mp4 = 'https://streamtape.com/get_video?' + t3
             if (mp4) mp4 = mp4 + "&stream=1"
             /*const regexp = /\(\'\w+\'\)\.innerHTML\s*\=\s*(.*?)\;/g
             const matches = html.matchAll(regexp)
