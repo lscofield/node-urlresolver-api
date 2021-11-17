@@ -25,7 +25,19 @@ exports.index = function (req, res) {
         var mp4 = null;
 
         try {
-            const regexp = /\(\'\w+\'\)\.innerHTML\s*\=\s*(.*?)\;/g
+            /*var t1 = html.split('div id="ideoolink')
+            var t2 = t1[1].split(">")
+            var t3 = t2[1].split("<")*/
+            var t1 = html.split('document.getElementById(\'ideoolink\').innerHTML = "')
+            var t3 = t1[1].split('"')
+
+            var t4 = t3[1].split('(')[1]
+            var t5 = t4.split("'")[1]
+            t3 = t5.split('?')[1]
+
+            mp4 = 'https://streamtape.com/get_video?' + t3
+            if (mp4) mp4 = mp4 + "&stream=1"
+            /*const regexp = /\(\'\w+\'\)\.innerHTML\s*\=\s*(.*?)\;/g
             const matches = html.matchAll(regexp)
 
             var _matches = []
@@ -52,7 +64,7 @@ exports.index = function (req, res) {
 
             mp4 = result
             mp4 += "&stream=1"
-            if (mp4[0] === "/") mp4 = "https:/" + mp4
+            if (mp4[0] === "/") mp4 = "https:/" + mp4*/
         } catch (e) {
             mp4 = null;
         }
