@@ -17,9 +17,9 @@ def get_media_url():
         sources = [(x[1] + 'p', x[0]) for x in sources]
         code, mode, hash = eval(sources[0][1])
         dl_url = 'https://{0}/dl?op=download_orig&id={1}&mode={2}&hash={3}'.format(host, code, mode, hash)
-        # get the mp4 url from client side making a get request from dl_url
-        # and getting the url from html like below    
-        #r = re.search('href="([^"]+)">Direct', html)
+        # get the mp4 url from client side making a get request from dl_url with the same headers
+        # and getting the mp4 from html result like below    
+        #mp4 = re.search('href="([^"]+)">Direct', dl_url-html)
         if dl_url:
             print(dl_url)
         else:
