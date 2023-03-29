@@ -1,19 +1,19 @@
-Here is an Android Simple APP make with java to see the power of node-urlresolver-api
+Here is a simple Android App made with Java to demonstrate node-urlresolver-api
 
-App integrated with:
+App features:
 - A video player (exoplayer based)
-    - Pinch zoom in/out support
-    - Play local files support
-    - Play hls.m3u8 support
-    - Open from intent like standard video player
+    - Supports pinching to zoom in and out
+    - Supports playing local files
+    - Supports playing hls.m3u8
+    - Use like standard video player
 - Google Admob integrated
-- A download manager with pause/resume/delete/open support
+- A download manager with pause/resume/delete/open options
 
 - Here is the apk file [download link](http://www.mediafire.com/folder/ur0h8u9t90enu/nide-url-resolver)
-- Here is the repository contains [code of the App](https://github.com/lscofield/url-resolver-android-simple)
+- Here is the repository that contains [code of the App](https://github.com/lscofield/url-resolver-android-simple)
 
+---
 
-------------------------------------- Forgive my english I'm still learning. Thanks -------------------------------
 # node-urlresolver-api
 > A complete nodejs API to extract streaming sites video direct URLs:
 > For the supported servers go to /servers.
